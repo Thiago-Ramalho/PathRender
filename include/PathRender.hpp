@@ -1,0 +1,22 @@
+#ifdef PATHRENDER_BUILD_CORE
+#include "PathRender/core/color.hpp"
+#include "PathRender/core/material.hpp"
+#include "PathRender/core/matrix.hpp"
+#include "PathRender/core/point.hpp"
+#include "PathRender/core/ray.hpp"
+#include "PathRender/core/vector.hpp"
+#endif // PRISM_CORE
+
+#ifdef PATHRENDER_BUILD_OBJECTS
+#include "PathRender/objects/Colormap.hpp"
+#include "PathRender/objects/ObjReader.hpp"
+#include "PathRender/objects/objects.hpp"
+#include "PathRender/objects/plane.hpp"
+#include "PathRender/objects/sphere.hpp"
+#endif // PATHRENDER_BUILD_OBJECTS
+
+#ifdef PATHRENDER_BUILD_SCENE
+#include "PathRender/scene/camera.hpp"
+#include "PathRender/scene/scene.hpp"
+#include "PathRender/scene/scene_parser.hpp"
+#endif

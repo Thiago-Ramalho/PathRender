@@ -1,0 +1,36 @@
+# Cena simples de exemplo para PathRender
+
+camera:
+  position: [0, 1, 0]
+  look_at: [0, 0, -5]
+  up: [0, 1, 0]
+  fov: 60
+  
+output:
+  width: 800
+  height: 600
+  filename: "output.ppm"
+
+objects:
+  - type: sphere
+    center: [0, 0, -5]
+    radius: 1.0
+    color: [1.0, 0.0, 0.0]  # vermelho
+    
+  - type: sphere
+    center: [-2.5, 0.5, -6]
+    radius: 0.8
+    color: [0.0, 1.0, 0.0]  # verde
+    
+  - type: sphere
+    center: [2, -0.5, -4]
+    radius: 0.6
+    color: [0.0, 0.0, 1.0]  # azul
+    
+  - type: plane
+    point: [0, -1, 0]
+    normal: [0, 1, 0]
+    color: [0.5, 0.5, 0.5]  # cinza
+
+background:
+  color: [0.2, 0.3, 0.4]  # azul céu

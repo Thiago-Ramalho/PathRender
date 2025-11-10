@@ -1,0 +1,150 @@
+# ============== #
+# CMake / Build  #
+# ============== #
+
+# Build directories
+/build/
+/build-*/
+/install/
+
+# CMake generated files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+*.cmake
+!CMakeLists.txt
+
+# Ninja build files
+build.ninja
+.ninja_deps
+.ninja_log
+
+# ==================== #
+# Compiled Outputs     #
+# ==================== #
+
+# Libraries
+*.a
+*.so
+*.so.*
+*.dylib
+*.lib
+*.dll
+
+# Object files
+*.o
+*.obj
+
+# Executables
+*.exe
+*.out
+pathrender_demo
+
+# Debug files
+*.dSYM/
+*.pdb
+*.ilk
+
+# Core dumps
+core
+core.*
+
+# ==================== #
+# Project Outputs      #
+# ==================== #
+
+# Rendered images
+/output/
+*.ppm
+*.png
+*.jpg
+*.jpeg
+*.tiff
+*.bmp
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+
+# ==================== #
+# IDE / Editor config  #
+# ==================== #
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Visual Studio
+.vs/
+*.vcxproj.user
+*.vcxproj.filters
+
+# CLion
+.idea/
+cmake-build-*/
+
+# Qt Creator
+*.pro.user
+*.pro.user.*
+
+# Xcode
+*.xcodeproj/
+*.xcworkspace/
+
+# ==================== #
+# System files        #
+# ==================== #
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.nfs*
+
+# Vim/vi backups
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+
+# ==================== #
+# Package Managers     #
+# ==================== #
+
+# Conan
+conanfile.txt.orig
+conaninfo.txt
+conanbuildinfo.*
+
+# vcpkg
+/vcpkg_installed/
+
+# ==================== #
+# Documentation        #
+# ==================== #
+
+# Doxygen
+/docs/html/
+/docs/latex/
+
+# Sphinx
+/docs/_build/
