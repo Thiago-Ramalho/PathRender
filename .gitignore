@@ -46,10 +46,6 @@ pathrender_demo
 *.pdb
 *.ilk
 
-# Core dumps
-core
-core.*
-
 # ==================== #
 # Project Outputs      #
 # ==================== #
