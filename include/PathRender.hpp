@@ -20,3 +20,7 @@
 #include "PathRender/scene/scene.hpp"
 #include "PathRender/scene/scene_parser.hpp"
 #endif
+
+#ifdef PATHRENDER_BUILD_UTILS
+#include "PathRender/utils/filesystem_utils.hpp"
+#endif // PATHRENDER_BUILD_UTILS
