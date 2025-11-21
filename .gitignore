@@ -63,6 +63,7 @@ pathrender_demo
 *.log
 *.tmp
 *.temp
+*.cache
 
 # ==================== #
 # IDE / Editor config  #
