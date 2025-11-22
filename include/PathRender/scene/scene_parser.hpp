@@ -1,5 +1,7 @@
 #ifndef A345DE02_764E_4675_8EC5_0F459C9310DC
 #define A345DE02_764E_4675_8EC5_0F459C9310DC
+#include "PathRender/objects/plane.hpp"
+#include "PathRender/objects/sphere.hpp"
 #ifndef PATHRENDER_SCENE_PARSER_HPP_
 #define PATHRENDER_SCENE_PARSER_HPP_
 
@@ -7,6 +9,7 @@
 #include "PathRender/scene/camera.hpp"
 #include <string>
 #include <memory>
+#include <yaml-cpp/yaml.h>
 
 namespace PathRender {
 
@@ -51,7 +54,14 @@ public:
     static SceneConfig parse(const std::string& filename);
     
 private:
-    // TODO: Implementar parsing YAML quando yaml-cpp for adicionado
+    static OutputParameters parse_output(const YAML::Node& output_node);
+    static Camera parse_camera(const YAML::Node& camera_node, const OutputParameters& output_params);
+    static Scene parse_objects(const YAML::Node& objects_node);
+    static Color parse_background(const YAML::Node& background_node);
+    static Point3 parse_point3(const YAML::Node& node);
+    static Vector3 parse_vector3(const YAML::Node& node);
+    static std::shared_ptr<Sphere> parse_sphere(const YAML::Node& node);
+    static std::shared_ptr<Plane> parse_plane(const YAML::Node& node);
 };
 
 } // namespace PathRender
