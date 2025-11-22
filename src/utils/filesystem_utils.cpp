@@ -1,4 +1,5 @@
 #include "PathRender/utils/filesystem_utils.hpp"
+#include "PathRender/scene/scene_parser.hpp"
 #include <chrono>
 #include <iomanip>
 #include <filesystem>

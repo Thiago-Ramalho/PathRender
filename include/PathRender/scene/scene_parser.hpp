@@ -11,15 +11,26 @@
 namespace PathRender {
 
 /**
+ * @struct OutputParameters
+ * @brief Configuração do output da renderização
+ */
+struct OutputParameters {
+    int width;
+    int height;
+    std::string output_filename;
+};
+
+/**
  * @struct SceneConfig
  * @brief Configuração completa de uma cena carregada de arquivo
  */
 struct SceneConfig {
     Scene scene;
     Camera camera;
-    int width;
-    int height;
-    std::string output_filename;
+    OutputParameters output_params;
+    Color background_color;
+
+    SceneConfig(const Scene& scene, const Camera& camera, const OutputParameters& output_params, const Color& background_color);
 };
 
 /**

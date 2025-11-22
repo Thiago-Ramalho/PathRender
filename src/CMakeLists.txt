@@ -18,6 +18,8 @@ target_include_directories(PathRender
         ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+target_link_libraries(PathRender PUBLIC yaml-cpp)
+
 # Definir macros de build
 target_compile_definitions(PathRender PUBLIC
     PATHRENDER_BUILD_CORE

@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.13.0)
 
 project(PathRender VERSION 0.0.1 LANGUAGES C CXX)
 
+find_package(yaml-cpp REQUIRED)
+
 # C++17 como padrão
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

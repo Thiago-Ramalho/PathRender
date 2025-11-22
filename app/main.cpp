@@ -1,3 +1,4 @@
+#include <filesystem>
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -10,64 +11,18 @@
 #include "PathRender/scene/scene.hpp"
 #include "PathRender/objects/sphere.hpp"
 #include "PathRender/objects/plane.hpp"
+#include "PathRender/scene/scene_parser.hpp"
 #include "PathRender/utils/filesystem_utils.hpp"
 
 using namespace PathRender;
 using namespace Utils;
 
-int main(int argc, char** argv) {
-    std::cout << "=== PathRender - Ray Caster Demo ===" << std::endl;
-    
-    // Configurações da imagem
-    const int width = 800;
-    const int height = 600;
-    const float aspect_ratio = static_cast<float>(width) / height;
-    
-    // Criar cena
-    Scene scene;
-    
-    // Adicionar objetos à cena
-    // Esfera vermelha no centro
-    auto sphere1 = std::make_shared<Sphere>(
-        Point3(0, 0, -5),    // posição
-        1.0f,                 // raio
-        Color(1.0, 0.0, 0.0)  // cor vermelha
-    );
-    scene.add_object(sphere1);
-    
-    // Esfera verde à esquerda
-    auto sphere2 = std::make_shared<Sphere>(
-        Point3(-2.5, 0.5, -6),
-        0.8f,
-        Color(0.0, 1.0, 0.0)  // cor verde
-    );
-    scene.add_object(sphere2);
-    
-    // Esfera azul à direita
-    auto sphere3 = std::make_shared<Sphere>(
-        Point3(2, -0.5, -4),
-        0.6f,
-        Color(0.0, 0.0, 1.0)  // cor azul
-    );
-    scene.add_object(sphere3);
-    
-    // Plano (chão) cinza
-    auto ground = std::make_shared<Plane>(
-        Point3(0, -1, 0),     // ponto no plano
-        Vector3(0, 1, 0),     // normal (apontando para cima)
-        Color(0.5, 0.5, 0.5)  // cor cinza
-    );
-    scene.add_object(ground);
-    
-    // Criar câmera
-    Camera camera(
-        Point3(0, 1, 0),      // posição da câmera
-        Point3(0, 0, -5),     // ponto que a câmera olha
-        Vector3(0, 1, 0),     // vetor "up"
-        60.0f,                // campo de visão (FOV) em graus
-        aspect_ratio          // aspect ratio
-    );
-    
+std::vector<Color> render_scene(SceneConfig config) {
+    const Scene& scene = config.scene;
+    const Camera& camera = config.camera;
+    const int width = config.output_params.width;
+    const int height = config.output_params.height;
+    const Color& background_color = config.background_color;
     std::cout << "Renderizando cena (" << width << "x" << height << ")..." << std::endl;
     
     // Buffer de pixels
@@ -90,7 +45,7 @@ int main(int argc, char** argv) {
             
             // Testar interseção com a cena
             HitRecord hit;
-            Color pixel_color(0.2, 0.3, 0.4); // cor de fundo (céu azulado)
+            Color pixel_color = background_color; // cor de fundo (céu azulado)
             
             if (scene.intersect(ray, 0.001f, 1000.0f, hit)) {
                 // Se houver interseção, usar a cor do objeto (sem iluminação)
@@ -103,6 +58,43 @@ int main(int argc, char** argv) {
     }
     
     std::cout << "Progresso: 100%" << std::endl;
+    return pixels;
+}
+
+std::string get_scene_filename_from_args(int argc, char** argv) {
+    for (int i = 1; i < argc; ++i) {
+        std::string arg = argv[i];
+
+        // Procurou flag "--scene"
+        if (arg == "--scene" && i + 1 < argc) {
+            return argv[i + 1];  // pega o nome informado
+        }
+    }
+
+    throw std::runtime_error("Usage: ./PathRender --scene nome.yaml");
+}
+
+
+int main(int argc, char** argv) {
+    std::cout << "=== PathRender - Ray Caster Demo ===" << std::endl;
+
+    std::string scene_filename = get_scene_filename_from_args(argc, argv);
+    
+    std::filesystem::path exe_path = std::filesystem::canonical(argv[0]).parent_path();
+    auto project_root = exe_path.parent_path().parent_path();
+    auto scene_path = project_root / "scenes" / scene_filename;
+
+    if (!std::filesystem::exists(scene_path)) {
+        std::cerr << "Scene file not found: " << scene_path << std::endl;
+        return 1;
+    }
+
+    // Parsear configuração da cena
+    SceneParser parser;
+    SceneConfig config = parser.parse(scene_path.string());
+    
+    // Renderizar cena com raycast simples
+    std::vector<Color> pixels = render_scene(config);
     
     // Garantir que o diretório output existe e gerar nome único
     std::string output_dir = ensure_output_directory();
@@ -110,7 +102,7 @@ int main(int argc, char** argv) {
     std::string filename = output_dir + "/render_" + timestamp + ".ppm";
     
     // Salvar imagem
-    save_ppm(filename, width, height, pixels);
+    save_ppm(filename, config.output_params.width, config.output_params.height, pixels);
     
     std::cout << "=== Renderização completa! ===" << std::endl;
     std::cout << "Abra o arquivo 'output.ppm' com um visualizador de imagens." << std::endl;

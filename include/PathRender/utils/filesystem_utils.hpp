@@ -5,6 +5,7 @@
 
 #include <sstream>
 #include <vector>
+#include "PathRender/scene/scene_parser.hpp"
 #include "PathRender/core/color.hpp"
 
 using namespace PathRender;
