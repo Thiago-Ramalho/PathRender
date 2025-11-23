@@ -74,10 +74,7 @@ std::string get_scene_filename_from_args(int argc, char** argv) {
     throw std::runtime_error("Usage: ./PathRender --scene nome.yml");
 }
 
-
-int main(int argc, char** argv) {
-    std::cout << "=== PathRender - Ray Caster Demo ===" << std::endl;
-
+std::filesystem::path extract_scene_path(int argc, char** argv) {
     std::string scene_filename = get_scene_filename_from_args(argc, argv);
     
     std::filesystem::path exe_path = std::filesystem::canonical(argv[0]).parent_path();
@@ -86,26 +83,39 @@ int main(int argc, char** argv) {
 
     if (!std::filesystem::exists(scene_path)) {
         std::cerr << "Scene file not found: " << scene_path << std::endl;
+        throw std::runtime_error("Scene file not found.");
+    }
+    return scene_path;
+}
+
+int main(int argc, char** argv) {
+    std::cout << "=== PathRender - Ray Caster Demo ===" << std::endl;
+
+    try {
+        auto scene_path = extract_scene_path(argc, argv);
+        
+        // Parsear configuração da cena
+        YAMLParser parser;
+        SceneConfig config = parser.parse(scene_path.string());
+        
+        // Renderizar cena com raycast simples
+        std::vector<Color> pixels = render_scene(config);
+        
+        // Garantir que o diretório output existe e gerar nome único
+        std::string output_dir = ensure_output_directory();
+        std::string timestamp = generate_timestamp();
+        std::string filename = output_dir + "/render_" + timestamp + ".ppm";
+        
+        // Salvar imagem
+        save_ppm(filename, config.output_params.width, config.output_params.height, pixels);
+        
+        std::cout << "=== Renderização completa! ===" << std::endl;
+        std::cout << "Abra o arquivo 'output.ppm' com um visualizador de imagens." << std::endl;
+        
+    } catch(const std::exception& e) {
+        std::cerr << e.what() << std::endl;
         return 1;
     }
-
-    // Parsear configuração da cena
-    YAMLParser parser;
-    SceneConfig config = parser.parse(scene_path.string());
-    
-    // Renderizar cena com raycast simples
-    std::vector<Color> pixels = render_scene(config);
-    
-    // Garantir que o diretório output existe e gerar nome único
-    std::string output_dir = ensure_output_directory();
-    std::string timestamp = generate_timestamp();
-    std::string filename = output_dir + "/render_" + timestamp + ".ppm";
-    
-    // Salvar imagem
-    save_ppm(filename, config.output_params.width, config.output_params.height, pixels);
-    
-    std::cout << "=== Renderização completa! ===" << std::endl;
-    std::cout << "Abra o arquivo 'output.ppm' com um visualizador de imagens." << std::endl;
     
     return 0;
 }
