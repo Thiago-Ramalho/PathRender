@@ -11,7 +11,7 @@
 #include "PathRender/scene/scene.hpp"
 #include "PathRender/objects/sphere.hpp"
 #include "PathRender/objects/plane.hpp"
-#include "PathRender/scene/scene_parser.hpp"
+#include "PathRender/scene/yaml_parser.hpp"
 #include "PathRender/utils/filesystem_utils.hpp"
 
 using namespace PathRender;
@@ -71,7 +71,7 @@ std::string get_scene_filename_from_args(int argc, char** argv) {
         }
     }
 
-    throw std::runtime_error("Usage: ./PathRender --scene nome.yaml");
+    throw std::runtime_error("Usage: ./PathRender --scene nome.yml");
 }
 
 
@@ -90,7 +90,7 @@ int main(int argc, char** argv) {
     }
 
     // Parsear configuração da cena
-    SceneParser parser;
+    YAMLParser parser;
     SceneConfig config = parser.parse(scene_path.string());
     
     // Renderizar cena com raycast simples
