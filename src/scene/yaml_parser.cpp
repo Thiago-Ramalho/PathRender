@@ -103,4 +103,16 @@ Color YAMLParser::parse_background(const YAML::Node& background_node) {
     return background_color;
 }
 
+Point3 YAMLParser::parse_point3(const YAML::Node& node) {
+    double x = node[0].as<double>();
+    double y = node[1].as<double>();
+    double z = node[2].as<double>();
+    return Point3(x, y, z);
+}
+
+Vector3 YAMLParser::parse_vector3(const YAML::Node& node) {
+    Point3 point3 = parse_point3(node);
+    return Vector3(point3.x, point3.y, point3.z);
+}
+
 } // namespace PathRender

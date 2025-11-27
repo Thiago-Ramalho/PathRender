@@ -14,12 +14,14 @@ public:
   SceneConfig parse(const std::string& filename) override;
 
 protected:
-  OutputParameters parse_output(const YAML::Node& output_node) override;
-  Camera parse_camera(const YAML::Node& camera_node, const OutputParameters& output_params) override;
-  Scene parse_objects(const YAML::Node& objects_node) override;
-  Color parse_background(const YAML::Node& background_node) override;
-  std::shared_ptr<Sphere> parse_sphere(const YAML::Node& node) override;
-  std::shared_ptr<Plane> parse_plane(const YAML::Node& node) override;
+  OutputParameters parse_output(const YAML::Node& output_node);
+  Camera parse_camera(const YAML::Node& camera_node, const OutputParameters& output_params);
+  Scene parse_objects(const YAML::Node& objects_node);
+  Color parse_background(const YAML::Node& background_node);
+  std::shared_ptr<Sphere> parse_sphere(const YAML::Node& node);
+  std::shared_ptr<Plane> parse_plane(const YAML::Node& node);
+  Point3 parse_point3(const YAML::Node& node);
+  Vector3 parse_vector3(const YAML::Node& node);
 };
 
 } // namespace PathRender

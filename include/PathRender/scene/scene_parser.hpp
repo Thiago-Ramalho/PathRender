@@ -54,16 +54,6 @@ public:
      * @throws std::runtime_error se o arquivo não puder ser lido
      */
     virtual SceneConfig parse(const std::string& filename) = 0;
-    
-protected:
-    virtual OutputParameters parse_output(const YAML::Node& output_node) = 0;
-    virtual Camera parse_camera(const YAML::Node& camera_node, const OutputParameters& output_params) = 0;
-    virtual Scene parse_objects(const YAML::Node& objects_node) = 0;
-    virtual Color parse_background(const YAML::Node& background_node) = 0;
-    virtual std::shared_ptr<Sphere> parse_sphere(const YAML::Node& node) = 0;
-    virtual std::shared_ptr<Plane> parse_plane(const YAML::Node& node) = 0;
-    Point3 parse_point3(const YAML::Node& node);
-    Vector3 parse_vector3(const YAML::Node& node);
 };
 
 } // namespace PathRender
