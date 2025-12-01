@@ -1,0 +1,37 @@
+#ifndef A9306E9A_D4F8_4C4F_8718_C1893A26B2B3
+#define A9306E9A_D4F8_4C4F_8718_C1893A26B2B3
+#ifndef PATHRENDER_TRIANGLE_HPP_
+#define PATHRENDER_TRIANGLE_HPP_
+
+#include "PathRender/objects/objects.hpp"
+#include "PathRender/core/point.hpp"
+#include "PathRender/core/vector.hpp"
+#include "PathRender/core/color.hpp"
+#include <array>
+
+namespace PathRender {
+
+class Triangle : public Object {
+public:
+    Triangle(const Point3& A, const Point3& B, const Point3& C, const Color& color);
+
+    bool intersect(const Ray& ray, float t_min, float t_max, HitRecord& hit) const override;
+    
+    Color get_color() const override { return m_color; }
+
+    std::string to_string() const override {
+        return "Triangle(A=" + std::to_string(m_vertices[0].x) + "," + std::to_string(m_vertices[0].y) + "," + std::to_string(m_vertices[0].z) +
+               ", B=" + std::to_string(m_vertices[1].x) + "," + std::to_string(m_vertices[1].y) + "," + std::to_string(m_vertices[1].z) +
+               ", C=" + std::to_string(m_vertices[2].x) + "," + std::to_string(m_vertices[2].y) + "," + std::to_string(m_vertices[2].z) + ")";
+    }
+    
+private:
+    std::array<Point3, 3> m_vertices;
+    Color m_color;
+};
+
+} // namespace PathRender
+
+#endif // PATHRENDER_TRIANGLE_HPP_
+
+#endif /* A9306E9A_D4F8_4C4F_8718_C1893A26B2B3 */

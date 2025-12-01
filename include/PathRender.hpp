@@ -5,6 +5,7 @@
 #include "PathRender/core/point.hpp"
 #include "PathRender/core/ray.hpp"
 #include "PathRender/core/vector.hpp"
+#include "PathRender/core/light.hpp"
 #endif // PRISM_CORE
 
 #ifdef PATHRENDER_BUILD_OBJECTS
@@ -13,6 +14,8 @@
 #include "PathRender/objects/objects.hpp"
 #include "PathRender/objects/plane.hpp"
 #include "PathRender/objects/sphere.hpp"
+#include "PathRender/objects/mesh.hpp"
+#include "PathRender/objects/triangle.hpp"
 #endif // PATHRENDER_BUILD_OBJECTS
 
 #ifdef PATHRENDER_BUILD_SCENE

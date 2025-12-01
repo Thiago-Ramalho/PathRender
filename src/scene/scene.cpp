@@ -6,6 +6,10 @@ void Scene::add_object(std::shared_ptr<Object> object) {
     m_objects.push_back(std::move(object));
 }
 
+void Scene::add_light(const Light& light) {
+    m_lights.push_back(light);
+}
+
 bool Scene::intersect(const Ray& ray, float t_min, float t_max, HitRecord& hit) const {
     HitRecord temp_hit;
     bool hit_anything = false;

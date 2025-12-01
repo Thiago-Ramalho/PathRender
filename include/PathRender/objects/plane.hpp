@@ -37,6 +37,11 @@ public:
     
     Point3 point() const { return m_point; }
     Vector3 normal() const { return m_normal; }
+
+    std::string to_string() const override {
+        return "Plane(point=" + std::to_string(m_point.x) + "," + std::to_string(m_point.y) + "," + std::to_string(m_point.z) +
+               ", normal=" + std::to_string(m_normal.x) + "," + std::to_string(m_normal.y) + "," + std::to_string(m_normal.z) + ")";
+    }
     
 private:
     Point3 m_point;   // Ponto no plano

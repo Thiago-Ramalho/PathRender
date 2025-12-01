@@ -2,6 +2,7 @@
 #define PATHRENDER_POINT_HPP_
 
 #include "PathRender/core/vector.hpp"
+#include <iostream>
 
 namespace PathRender {
 
@@ -19,6 +20,7 @@ public:
     // Construtores
     Point3() : x(0), y(0), z(0) {}
     Point3(float x, float y, float z) : x(x), y(y), z(z) {}
+    Point3(const Vector3& v) : x(v.x), y(v.y), z(v.z) {}
     
     // Ponto + Vetor = Ponto
     Point3 operator+(const Vector3& v) const {
@@ -48,6 +50,11 @@ public:
         y -= v.y;
         z -= v.z;
         return *this;
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const Point3& p) {
+        os << "{" << p.x << ", " << p.y << ", " << p.z << ")";
+        return os;
     }
 };
 

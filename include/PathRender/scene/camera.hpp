@@ -37,6 +37,10 @@ public:
      */
     Ray get_ray(float u, float v) const;
     
+    std::string to_string() const {
+        return "Camera(origin=" + std::to_string(m_origin.x) + ", " + std::to_string(m_origin.y) + ", " + std::to_string(m_origin.z) + ")";
+    }
+
 private:
     Point3 m_origin;          // Posição da câmera
     Point3 m_lower_left;      // Canto inferior esquerdo do plano de visão

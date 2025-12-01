@@ -8,6 +8,7 @@
 #include "PathRender/core/ray.hpp"
 #include "PathRender/core/color.hpp"
 #include "PathRender/scene/camera.hpp"
+#include "PathRender/scene/obj_parser.hpp"
 #include "PathRender/scene/scene.hpp"
 #include "PathRender/objects/sphere.hpp"
 #include "PathRender/objects/plane.hpp"
@@ -95,7 +96,7 @@ int main(int argc, char** argv) {
         auto scene_path = extract_scene_path(argc, argv);
         
         // Parsear configuração da cena
-        YAMLParser parser;
+        OBJParser parser;
         SceneConfig config = parser.parse(scene_path.string());
         
         // Renderizar cena com raycast simples

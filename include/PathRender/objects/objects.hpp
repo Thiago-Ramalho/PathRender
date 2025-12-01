@@ -55,6 +55,8 @@ public:
      * @brief Retorna a cor do objeto
      */
     virtual Color get_color() const = 0;
+
+    virtual std::string to_string() const = 0;
 };
 
 } // namespace PathRender

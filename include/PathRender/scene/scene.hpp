@@ -4,6 +4,8 @@
 #define PATHRENDER_SCENE_HPP_
 
 #include "PathRender/objects/objects.hpp"
+#include "PathRender/core/light.hpp"
+#include "PathRender/core/ray.hpp"
 #include <vector>
 #include <memory>
 
@@ -22,6 +24,8 @@ public:
      * @param object Ponteiro compartilhado para o objeto
      */
     void add_object(std::shared_ptr<Object> object);
+
+    void add_light(const Light& light);
     
     /**
      * @brief Testa interseção do raio com todos os objetos da cena
@@ -43,8 +47,9 @@ public:
      */
     size_t object_count() const { return m_objects.size(); }
     
-private:
+    std::vector<Light> m_lights;
     std::vector<std::shared_ptr<Object>> m_objects;
+private:
 };
 
 } // namespace PathRender
