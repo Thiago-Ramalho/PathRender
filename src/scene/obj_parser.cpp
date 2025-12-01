@@ -7,13 +7,7 @@
 namespace PathRender {
 
 SceneConfig OBJParser::parse(const std::string& filename) {
-    try {
-        parse_scene(filename);
-        YAMLParser yaml_parser;
-        return yaml_parser.parse(filename);
-    } catch (const YAML::ParserException &e) {
-        throw std::runtime_error("Erro ao analisar o arquivo YAML: " + std::string(e.what()));
-    }
+    return parse_scene(filename);
 }
 
 Vector3 OBJParser::parse_vector3(const std::string& line) {

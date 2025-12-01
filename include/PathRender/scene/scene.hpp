@@ -44,10 +44,12 @@ public:
      * @brief Retorna o número de objetos na cena
      */
     size_t object_count() const;
+
+    std::string to_string() const;
     
+private:
     std::vector<Light> m_lights;
     std::vector<std::shared_ptr<Object>> m_objects;
-private:
 };
 
 } // namespace PathRender

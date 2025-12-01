@@ -98,6 +98,7 @@ int main(int argc, char** argv) {
         // Parsear configuração da cena
         OBJParser parser;
         SceneConfig config = parser.parse(scene_path.string());
+        std::cout << "Cena carregada: " << config.to_string() << std::endl;
         
         // Renderizar cena com raycast simples
         std::vector<Color> pixels = render_scene(config);

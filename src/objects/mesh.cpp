@@ -49,7 +49,7 @@ const std::string& Mesh::get_name() const {
 }
 
 std::string Mesh::to_string() const {
-    return "Mesh(name=" + m_name + ", num_vertices=" + std::to_string(m_vertices.size()) + ", num_triangles=" + std::to_string(m_triangles.size()) + ")";
+    return "Mesh(name=" + m_name + ", color=" + m_color.to_string() + ", num_vertices=" + std::to_string(m_vertices.size()) + ", num_triangles=" + std::to_string(m_triangles.size()) + ")";
 }
 
 } // namespace PathRender

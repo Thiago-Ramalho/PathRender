@@ -19,6 +19,8 @@ struct OutputParameters {
     int width;
     int height;
     std::string output_filename;
+    std::string to_string() const;
+
 };
 
 /**
@@ -32,6 +34,7 @@ struct SceneConfig {
     Color background_color;
 
     SceneConfig(const Scene& scene, const Camera& camera, const OutputParameters& output_params, const Color& background_color);
+    std::string to_string() const;
 };
 
 /**
