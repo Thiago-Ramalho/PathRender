@@ -34,7 +34,6 @@ build.ninja
 
 # Object files
 *.o
-*.obj
 
 # Executables
 *.exe
