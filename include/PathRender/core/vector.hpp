@@ -2,6 +2,7 @@
 #define PATHRENDER_VECTOR_HPP_
 
 #include <cmath>
+#include <string>
 
 namespace PathRender {
 
@@ -14,96 +15,45 @@ public:
     float x, y, z;
     
     // Construtores
-    Vector3() : x(0), y(0), z(0) {}
-    Vector3(float x, float y, float z) : x(x), y(y), z(z) {}
+    Vector3();
+    Vector3(float x, float y, float z);
     
     // Operadores aritméticos
-    Vector3 operator+(const Vector3& v) const {
-        return Vector3(x + v.x, y + v.y, z + v.z);
-    }
+    Vector3 operator+(const Vector3& v) const;
     
-    Vector3 operator-(const Vector3& v) const {
-        return Vector3(x - v.x, y - v.y, z - v.z);
-    }
+    Vector3 operator-(const Vector3& v) const;
     
-    Vector3 operator*(float scalar) const {
-        return Vector3(x * scalar, y * scalar, z * scalar);
-    }
+    Vector3 operator*(float scalar) const;
     
-    Vector3 operator/(float scalar) const {
-        return Vector3(x / scalar, y / scalar, z / scalar);
-    }
+    Vector3 operator/(float scalar) const;
     
-    Vector3 operator-() const {
-        return Vector3(-x, -y, -z);
-    }
+    Vector3 operator-() const;
     
     // Operadores de atribuição
-    Vector3& operator+=(const Vector3& v) {
-        x += v.x;
-        y += v.y;
-        z += v.z;
-        return *this;
-    }
+    Vector3& operator+=(const Vector3& v);
     
-    Vector3& operator*=(float scalar) {
-        x *= scalar;
-        y *= scalar;
-        z *= scalar;
-        return *this;
-    }
+    Vector3& operator*=(float scalar);
     
-    Vector3& operator/=(float scalar) {
-        x /= scalar;
-        y /= scalar;
-        z /= scalar;
-        return *this;
-    }
+    Vector3& operator/=(float scalar);
     
     // Produto escalar (dot product)
-    float dot(const Vector3& v) const {
-        return x * v.x + y * v.y + z * v.z;
-    }
+    float dot(const Vector3& v) const;
     
     // Produto vetorial (cross product)
-    Vector3 cross(const Vector3& v) const {
-        return Vector3(
-            y * v.z - z * v.y,
-            z * v.x - x * v.z,
-            x * v.y - y * v.x
-        );
-    }
+    Vector3 cross(const Vector3& v) const;
     
     // Comprimento
-    float length() const {
-        return std::sqrt(length_squared());
-    }
+    float length() const;
     
-    float length_squared() const {
-        return x * x + y * y + z * z;
-    }
+    float length_squared() const;
     
     // Normalização
-    Vector3 normalized() const {
-        float len = length();
-        if (len > 0) {
-            return *this / len;
-        }
-        return *this;
-    }
+    Vector3 normalized() const;
     
-    void normalize() {
-        float len = length();
-        if (len > 0) {
-            *this /= len;
-        }
-    }
-};
+    void normalize();
 
-// Operador para multiplicação escalar à esquerda
-inline Vector3 operator*(float scalar, const Vector3& v) {
-    return v * scalar;
-}
+    std::string to_string() const;
+};
 
 } // namespace PathRender
 

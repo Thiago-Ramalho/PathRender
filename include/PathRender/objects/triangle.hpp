@@ -15,7 +15,7 @@ public:
 
     bool intersect(const Ray& ray, float t_min, float t_max, HitRecord& hit) const override;
     
-    Color get_color() const override { return m_color; }
+    const Color& get_color() const override { return m_color; }
 
     std::string to_string() const override {
         return "Triangle(A=" + std::to_string(m_vertices[0].x) + "," + std::to_string(m_vertices[0].y) + "," + std::to_string(m_vertices[0].z) +

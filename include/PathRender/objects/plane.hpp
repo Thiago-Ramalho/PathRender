@@ -31,15 +31,13 @@ public:
      */
     bool intersect(const Ray& ray, float t_min, float t_max, HitRecord& hit) const override;
     
-    Color get_color() const override { return m_color; }
+    const Color& get_color() const override;
     
-    Point3 point() const { return m_point; }
-    Vector3 normal() const { return m_normal; }
+    const Point3& get_point() const;
 
-    std::string to_string() const override {
-        return "Plane(point=" + std::to_string(m_point.x) + "," + std::to_string(m_point.y) + "," + std::to_string(m_point.z) +
-               ", normal=" + std::to_string(m_normal.x) + "," + std::to_string(m_normal.y) + "," + std::to_string(m_normal.z) + ")";
-    }
+    const Vector3& get_normal() const;
+
+    std::string to_string() const override;
     
 private:
     Point3 m_point;   // Ponto no plano

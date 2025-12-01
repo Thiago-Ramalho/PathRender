@@ -19,18 +19,17 @@ public:
     Vector3 direction;
     
     // Construtores
-    Ray() {}
-    Ray(const Point3& origin, const Vector3& direction)
-        : origin(origin), direction(direction) {}
+    Ray() = default;
+    Ray(const Point3& origin, const Vector3& direction);
     
     /**
      * @brief Retorna um ponto ao longo do raio
      * @param t Parâmetro do raio (distância)
      * @return Ponto P(t) = origem + t * direção
      */
-    Point3 at(float t) const {
-        return origin + direction * t;
-    }
+    Point3 at(float t) const;
+
+    std::string to_string() const;
 };
 
 } // namespace PathRender

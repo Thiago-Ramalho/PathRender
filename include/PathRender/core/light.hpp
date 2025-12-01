@@ -9,20 +9,15 @@ namespace PathRender {
 
 class Light {
 public:
-    
-    Light() {}
-    Light(const Point3& origin, std::string name, int lp)
-        : m_origin(origin), m_name(name), m_lp(lp) {}
-
-    friend std::ostream& operator<<(std::ostream& os, const Light& l) {
-        os << "Light(name=" << l.m_name << ", origin=" << l.m_origin << ", lp=" << l.m_lp << ")";
-        return os;
-    }
-
-private:
+    int m_lp;
     Point3 m_origin;
     std::string m_name;
-    int m_lp;
+
+    Light();
+
+    Light(const Point3& origin, std::string name, int lp);
+
+    std::string to_string() const;
 };
 
 } // namespace PathRender

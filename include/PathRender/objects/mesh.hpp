@@ -20,23 +20,19 @@ public:
     void add_triangle(const Triangle& triangle);
     void add_vertex(const Point3& vertex);
     
-    std::vector<Triangle> get_triangles() const { return m_triangles; }
-    std::vector<Point3> get_vertices() const { return m_vertices; }
+    const std::vector<Triangle>& get_triangles() const;
+    const std::vector<Point3>& get_vertices() const;
     
-    void set_material(const Material& material) { m_material = material; }
-    Material get_material() const { return m_material; }
+    void set_material(const Material& material);
+    const Material& get_material() const;
     
-    void set_color(const Color& color) { m_color = color; }
-    Color get_color() const override { return m_color; }
+    void set_color(const Color& color);
+    const Color& get_color() const override;
     
-    void set_name(std::string name) {
-        m_name = name;
-    }
-    std::string get_name() const { return m_name; }
+    void set_name(std::string name);
+    const std::string& get_name() const;
 
-    std::string to_string() const override {
-        return "Mesh(name=" + m_name + ", num_vertices=" + std::to_string(m_vertices.size()) + ", num_triangles=" + std::to_string(m_triangles.size()) + ")";
-    }
+    std::string to_string() const override;
     
 private:
     std::string m_name;

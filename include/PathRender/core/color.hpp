@@ -1,6 +1,8 @@
 #ifndef PATHRENDER_COLOR_HPP_
 #define PATHRENDER_COLOR_HPP_
+
 #include "PathRender/core/export.hpp"
+#include <string>
 
 namespace PathRender {
     /**
@@ -12,6 +14,10 @@ namespace PathRender {
     */
     class PATHRENDER_EXPORT Color {
     public:
+        double r; ///< Red component of the color (0.0 to 1.0)
+        double g; ///< Green component of the color (0.0 to 1.0)
+        double b; ///< Blue component of the color (0.0 to 1.0)
+        
         /**
         * @brief Default constructor that initializes the color to black (0, 0, 0).
         */
@@ -51,9 +57,7 @@ namespace PathRender {
 
         Color& clamp();
 
-        double r; ///< Red component of the color (0.0 to 1.0)
-        double g; ///< Green component of the color (0.0 to 1.0)
-        double b; ///< Blue component of the color (0.0 to 1.0)
+        std::string to_string() const;
     };
 
 } // namespace PathRender

@@ -18,44 +18,25 @@ public:
     float x, y, z;
     
     // Construtores
-    Point3() : x(0), y(0), z(0) {}
-    Point3(float x, float y, float z) : x(x), y(y), z(z) {}
-    Point3(const Vector3& v) : x(v.x), y(v.y), z(v.z) {}
+    Point3();
+    Point3(float x, float y, float z);
+    Point3(const Vector3& v);
     
     // Ponto + Vetor = Ponto
-    Point3 operator+(const Vector3& v) const {
-        return Point3(x + v.x, y + v.y, z + v.z);
-    }
+    Point3 operator+(const Vector3& v) const;
     
     // Ponto - Vetor = Ponto
-    Point3 operator-(const Vector3& v) const {
-        return Point3(x - v.x, y - v.y, z - v.z);
-    }
+    Point3 operator-(const Vector3& v) const;
     
     // Ponto - Ponto = Vetor
-    Vector3 operator-(const Point3& p) const {
-        return Vector3(x - p.x, y - p.y, z - p.z);
-    }
+    Vector3 operator-(const Point3& p) const;
     
     // Operadores de atribuição
-    Point3& operator+=(const Vector3& v) {
-        x += v.x;
-        y += v.y;
-        z += v.z;
-        return *this;
-    }
+    Point3& operator+=(const Vector3& v);
     
-    Point3& operator-=(const Vector3& v) {
-        x -= v.x;
-        y -= v.y;
-        z -= v.z;
-        return *this;
-    }
+    Point3& operator-=(const Vector3& v);
 
-    friend std::ostream& operator<<(std::ostream& os, const Point3& p) {
-        os << "{" << p.x << ", " << p.y << ", " << p.z << ")";
-        return os;
-    }
+    std::string to_string() const;
 };
 
 } // namespace PathRender

@@ -40,4 +40,8 @@ Color& Color::clamp() {
     return *this;
 }
 
+std::string Color::to_string() const {
+    return "Color(r=" + std::to_string(r) + ", g=" + std::to_string(g) + ", b=" + std::to_string(b) + ")";
+}
+
 } // namespace PathRender

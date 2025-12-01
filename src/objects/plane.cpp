@@ -25,4 +25,21 @@ bool Plane::intersect(const Ray& ray, float t_min, float t_max, HitRecord& hit) 
     return true;
 }
 
+const Color& Plane::get_color() const { 
+    return m_color; 
+}
+    
+const Point3& Plane::get_point() const { 
+    return m_point; 
+}
+
+const Vector3& Plane::get_normal() const { 
+    return m_normal; 
+}
+
+std::string Plane::to_string() const {
+    return "Plane(point=" + std::to_string(m_point.x) + "," + std::to_string(m_point.y) + "," + std::to_string(m_point.z) +
+            ", normal=" + std::to_string(m_normal.x) + "," + std::to_string(m_normal.y) + "," + std::to_string(m_normal.z) + ")";
+}
+
 } // namespace PathRender

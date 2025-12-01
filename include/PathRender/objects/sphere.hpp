@@ -30,14 +30,12 @@ public:
      */
     bool intersect(const Ray& ray, float t_min, float t_max, HitRecord& hit) const override;
     
-    Color get_color() const override { return m_color; }
+    const Color& get_color() const override;
     
-    Point3 center() const { return m_center; }
-    float radius() const { return m_radius; }
+    const Point3& get_center() const;
+    const float& get_radius() const;
 
-    std::string to_string() const override {
-        return "Sphere(center=" + std::to_string(m_center.x) + "," + std::to_string(m_center.y) + "," + std::to_string(m_center.z) + ", radius=" + std::to_string(m_radius) + ")";
-    }
+    std::string to_string() const override;
     
 private:
     Point3 m_center;

@@ -37,4 +37,20 @@ bool Sphere::intersect(const Ray& ray, float t_min, float t_max, HitRecord& hit)
     return true;
 }
 
+const Color& Sphere::get_color() const { 
+    return m_color; 
+}
+    
+const Point3& Sphere::get_center() const { 
+    return m_center; 
+}
+
+const float& Sphere::get_radius() const { 
+    return m_radius; 
+}
+
+std::string Sphere::to_string() const {
+    return "Sphere(center=" + std::to_string(m_center.x) + "," + std::to_string(m_center.y) + "," + std::to_string(m_center.z) + ", radius=" + std::to_string(m_radius) + ")";
+}
+
 } // namespace PathRender

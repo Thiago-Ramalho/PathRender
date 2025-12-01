@@ -9,8 +9,6 @@
 #endif // PRISM_CORE
 
 #ifdef PATHRENDER_BUILD_OBJECTS
-#include "PathRender/objects/Colormap.hpp"
-#include "PathRender/objects/ObjReader.hpp"
 #include "PathRender/objects/objects.hpp"
 #include "PathRender/objects/plane.hpp"
 #include "PathRender/objects/sphere.hpp"

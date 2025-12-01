@@ -30,4 +30,8 @@ void Scene::clear() {
     m_objects.clear();
 }
 
+size_t Scene::object_count() const { 
+    return m_objects.size(); 
+}
+
 } // namespace PathRender

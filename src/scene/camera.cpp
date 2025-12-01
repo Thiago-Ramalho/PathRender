@@ -30,4 +30,8 @@ Ray Camera::get_ray(float u, float v) const {
     return Ray(m_origin, dir.normalized());
 }
 
+std::string Camera::to_string() const {
+    return "Camera(origin=" + std::to_string(m_origin.x) + ", " + std::to_string(m_origin.y) + ", " + std::to_string(m_origin.z) + ")";
+}
+
 } // namespace PathRender
