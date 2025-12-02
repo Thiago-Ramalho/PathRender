@@ -32,6 +32,10 @@ public:
     void set_name(std::string name);
     const std::string& get_name() const;
 
+    std::string print_triangles() const;
+
+    std::string print_vertices() const;
+
     std::string to_string() const override;
     
 private:

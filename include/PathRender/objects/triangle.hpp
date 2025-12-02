@@ -22,6 +22,8 @@ public:
                ", B=" + std::to_string(m_vertices[1].x) + "," + std::to_string(m_vertices[1].y) + "," + std::to_string(m_vertices[1].z) +
                ", C=" + std::to_string(m_vertices[2].x) + "," + std::to_string(m_vertices[2].y) + "," + std::to_string(m_vertices[2].z) + ")";
     }
+
+    Vector3 get_normal() const;
     
 private:
     std::array<Point3, 3> m_vertices;

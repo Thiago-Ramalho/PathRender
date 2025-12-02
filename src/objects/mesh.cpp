@@ -4,8 +4,18 @@
 namespace PathRender {
 
 bool Mesh::intersect(const Ray& ray, float t_min, float t_max, HitRecord& hit) const {
-    // TODO: implementar
-    return true;
+    bool intersected = false;
+    float closest_so_far = t_max;
+    for (const Triangle& triangle : m_triangles) {
+        HitRecord temp_hit;
+        if (triangle.intersect(ray, t_min, closest_so_far, temp_hit)) {
+            hit = temp_hit;
+            hit.color = m_color; 
+            intersected = true;
+            closest_so_far = hit.t;
+        }
+    }
+    return intersected;
 }
 
 void Mesh::add_triangle(const Triangle& triangle) {
@@ -48,8 +58,24 @@ const std::string& Mesh::get_name() const {
     return m_name; 
 }
 
+std::string Mesh::print_triangles() const {
+    std::string result;
+    for (const auto& triangle : m_triangles) {
+        result += triangle.to_string() + "\n";
+    }
+    return result;
+}
+
+std::string Mesh::print_vertices() const {
+    std::string result;
+    for (const auto& vertex : m_vertices) {
+        result += vertex.to_string() + "\n";
+    }
+    return result;
+}
+
 std::string Mesh::to_string() const {
-    return "Mesh(name=" + m_name + ", color=" + m_color.to_string() + ", num_vertices=" + std::to_string(m_vertices.size()) + ", num_triangles=" + std::to_string(m_triangles.size()) + ")";
+    return "Mesh(name=" + m_name + ", color=" + m_color.to_string() + "\n" + print_vertices() + "\n" + print_triangles() + ")";
 }
 
 } // namespace PathRender

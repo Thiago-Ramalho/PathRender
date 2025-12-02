@@ -48,7 +48,7 @@ std::vector<Color> render_scene(SceneConfig config) {
             HitRecord hit;
             Color pixel_color = background_color; // cor de fundo (céu azulado)
             
-            if (scene.intersect(ray, 0.001f, 1000.0f, hit)) {
+            if (scene.intersect(ray, 0.001f, 10000000000.0f, hit)) {
                 // Se houver interseção, usar a cor do objeto (sem iluminação)
                 pixel_color = hit.color;
             }
@@ -98,7 +98,6 @@ int main(int argc, char** argv) {
         // Parsear configuração da cena
         OBJParser parser;
         SceneConfig config = parser.parse(scene_path.string());
-        std::cout << "Cena carregada: " << config.to_string() << std::endl;
         
         // Renderizar cena com raycast simples
         std::vector<Color> pixels = render_scene(config);

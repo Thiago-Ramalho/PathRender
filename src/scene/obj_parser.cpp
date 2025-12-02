@@ -1,6 +1,5 @@
 #include "PathRender/scene/obj_parser.hpp"
 #include "PathRender/core/light.hpp"
-#include "PathRender/scene/yaml_parser.hpp"
 #include <fstream>
 #include <iostream>
 
@@ -12,9 +11,8 @@ SceneConfig OBJParser::parse(const std::string& filename) {
 
 Vector3 OBJParser::parse_vector3(const std::string& line) {
     std::stringstream ss(line);
-    char dummy;
     float x, y, z;
-    ss >> dummy >> x >> y >> z;
+    ss >> x >> y >> z;
     return { x, y, z };
 }
 
@@ -65,11 +63,11 @@ SceneConfig OBJParser::parse_scene(const std::string& filename) {
                 current_mesh = std::make_shared<Mesh>();
             }
 
-            current_mesh->add_vertex(parse_point3(line));
-            global_vertices.push_back(parse_point3(line));
+            current_mesh->add_vertex(parse_point3(line.substr(2)));
+            global_vertices.push_back(parse_point3(line.substr(2)));
         }
         else if (starts_with(line, "vn ")) {
-            global_normals.push_back(parse_vector3(line));
+            global_normals.push_back(parse_vector3(line.substr(3)));
         }
         else if (starts_with(line, "usemtl ")) {
             std::string name = line.substr(7);
@@ -97,12 +95,12 @@ SceneConfig OBJParser::parse_scene(const std::string& filename) {
         }
         else if (starts_with(line, "f ")) {
             is_new_object = true;
-            std::stringstream ss(line);
+            std::stringstream ss(line.substr(2));
             int idx[3];
             for (int i = 0; i < 3; ++i) {
                 ss >> idx[i];
             }
-            
+
             Point3 p0 = global_vertices[idx[0] - 1];
             Point3 p1 = global_vertices[idx[1] - 1];
             Point3 p2 = global_vertices[idx[2] - 1];
@@ -125,7 +123,7 @@ SceneConfig OBJParser::parse_scene(const std::string& filename) {
     }
 
     float aspect_ratio = static_cast<float>(out_params.width) / static_cast<float>(out_params.height);
-    Camera camera = Camera(cam_pos, cam_lookat, cam_up, 40.0f, aspect_ratio);
+    Camera camera = Camera(cam_pos, cam_lookat, cam_up, 70.0f, aspect_ratio);
 
     return SceneConfig(scene, camera, out_params, bg_color);
 }
@@ -137,8 +135,8 @@ Color OBJParser::get_color_for_material(const std::string& mtl_name) {
     if (mtl_name == "back") return Color(0.7f, 0.7f, 0.7f);
     if (mtl_name == "green") return Color(0.12f, 0.45f, 0.15f); // Right wall
     if (mtl_name == "red") return Color(0.65f, 0.05f, 0.05f);   // Left wall
-    if (mtl_name == "short_box") return Color(0.7f, 0.7f, 0.7f);
-    if (mtl_name == "tall_box") return Color(0.7f, 0.7f, 0.7f);
+    if (mtl_name == "short_box") return Color(0.0f, 0.0f, 1.0f);
+    if (mtl_name == "tall_box") return Color(0.0f, 0.0f, 0.0f);
     if (mtl_name == "light") return Color(10.0f, 10.0f, 10.0f); // Bright emission
     return Color(0.5f, 0.5f, 0.5f); // Default
 }
