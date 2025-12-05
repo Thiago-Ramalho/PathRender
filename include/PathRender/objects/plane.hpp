@@ -38,6 +38,8 @@ public:
     const Vector3& get_normal() const;
 
     std::string to_string() const override;
+
+    Point3 get_position() const override;
     
 private:
     Point3 m_point;   // Ponto no plano

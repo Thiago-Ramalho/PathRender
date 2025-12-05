@@ -80,7 +80,9 @@ SceneConfig OBJParser::parse_scene(const std::string& filename) {
                 current_mesh->set_color(get_color_for_material(current_name));
                 scene.add_object(current_mesh);
             }
-
+            if( current_name == "ceiling"){
+                current_mesh->set_material({true});
+            }
         }
         else if (starts_with(line, "lp ")) {
             is_new_object = true;
@@ -136,7 +138,7 @@ Color OBJParser::get_color_for_material(const std::string& mtl_name) {
     if (mtl_name == "green") return Color(0.12f, 0.45f, 0.15f); // Right wall
     if (mtl_name == "red") return Color(0.65f, 0.05f, 0.05f);   // Left wall
     if (mtl_name == "short_box") return Color(0.0f, 0.0f, 1.0f);
-    if (mtl_name == "tall_box") return Color(0.0f, 0.0f, 0.0f);
+    if (mtl_name == "tall_box") return Color(0.6f, 0.7f, 0.8f);
     if (mtl_name == "light") return Color(10.0f, 10.0f, 10.0f); // Bright emission
     return Color(0.5f, 0.5f, 0.5f); // Default
 }

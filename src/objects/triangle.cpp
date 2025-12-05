@@ -57,4 +57,12 @@ bool Triangle::intersect(const Ray& ray, float t_min, float t_max, HitRecord& hi
     return false;
 }
 
+Point3 Triangle::get_position() const {
+    auto&& v = m_vertices;
+    Vector3 a = Vector3(v[0].x, v[0].y, v[0].z), 
+            b = Vector3(v[1].x, v[1].y, v[1].z), 
+            c = Vector3(v[2].x, v[2].y, v[2].z);
+    return (a + b + c) / 3.0;
+}
+
 } // namespace PathRender

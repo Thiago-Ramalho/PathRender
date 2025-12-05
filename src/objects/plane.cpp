@@ -42,4 +42,8 @@ std::string Plane::to_string() const {
             ", normal=" + std::to_string(m_normal.x) + "," + std::to_string(m_normal.y) + "," + std::to_string(m_normal.z) + ")";
 }
 
+Point3 Plane::get_position() const {
+    return m_point;
+}
+
 } // namespace PathRender

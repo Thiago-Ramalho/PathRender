@@ -36,6 +36,8 @@ public:
     const float& get_radius() const;
 
     std::string to_string() const override;
+
+    Point3 get_position() const override;
     
 private:
     Point3 m_center;

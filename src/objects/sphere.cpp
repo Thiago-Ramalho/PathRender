@@ -53,4 +53,8 @@ std::string Sphere::to_string() const {
     return "Sphere(center=" + std::to_string(m_center.x) + "," + std::to_string(m_center.y) + "," + std::to_string(m_center.z) + ", radius=" + std::to_string(m_radius) + ")";
 }
 
+Point3 Sphere::get_position() const {
+    return m_center;
+}
+
 } // namespace PathRender

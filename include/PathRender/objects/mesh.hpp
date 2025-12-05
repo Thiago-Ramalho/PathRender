@@ -2,7 +2,6 @@
 #define PATHRENDER_MESH_HPP_
 
 #include "PathRender/objects/objects.hpp"
-#include "PathRender/core/material.hpp"
 #include "PathRender/core/point.hpp"
 #include "PathRender/core/color.hpp"
 #include "PathRender/objects/triangle.hpp"
@@ -23,9 +22,6 @@ public:
     const std::vector<Triangle>& get_triangles() const;
     const std::vector<Point3>& get_vertices() const;
     
-    void set_material(const Material& material);
-    const Material& get_material() const;
-    
     void set_color(const Color& color);
     const Color& get_color() const override;
     
@@ -37,12 +33,13 @@ public:
     std::string print_vertices() const;
 
     std::string to_string() const override;
+
+    Point3 get_position() const override;
     
 private:
     std::string m_name;
     std::vector<Triangle> m_triangles;
     std::vector<Point3> m_vertices;
-    Material m_material;
     Color m_color;
 };
 

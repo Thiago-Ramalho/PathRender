@@ -3,6 +3,7 @@
 
 #include "PathRender/core/ray.hpp"
 #include "PathRender/core/point.hpp"
+#include "PathRender/core/material.hpp"
 #include "PathRender/core/vector.hpp"
 #include "PathRender/core/color.hpp"
 #include <memory>
@@ -55,6 +56,19 @@ public:
     virtual const Color& get_color() const = 0;
 
     virtual std::string to_string() const = 0;
+
+    void set_material(const Material& material) {
+        m_material = material; 
+    }
+
+    const Material& get_material() const {
+        return m_material; 
+    }
+
+    virtual Point3 get_position() const = 0;
+
+private:
+    Material m_material;
 };
 
 } // namespace PathRender

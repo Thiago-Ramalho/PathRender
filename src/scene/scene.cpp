@@ -23,6 +23,33 @@ bool Scene::intersect(const Ray& ray, float t_min, float t_max, HitRecord& hit) 
         }
     }
 
+    // direct lighting (shadows)
+    if(hit_anything) {
+        for(const auto& object : m_objects) {  // only the lights
+            if(object->get_material().is_light) {
+                auto&& light = object;
+
+                auto&& collision_point = hit.point + hit.normal * 0.001f; // sanity offset
+                
+                Point3 light_point = light->get_position();
+
+                Ray shadow_ray = { collision_point, (light_point - collision_point).normalized() };
+                
+                // find if any object ( that is not this light? ) is between the collision point and the light
+                HitRecord shadow_hit;
+                float closest_shadow_object = (light_point - collision_point).length();
+                for (const auto& obj : m_objects) {
+                    if (obj->intersect(shadow_ray, t_min, closest_shadow_object, shadow_hit)) {
+                        if(obj != light) {
+                            hit.color = Color(.0, .0, .0); // in shadow
+                            break;
+                        } 
+                    }
+                }
+            }
+        }
+    }
+
     return hit_anything;
 }
 

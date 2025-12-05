@@ -3,9 +3,10 @@
 
 namespace PathRender {
 
-class Material {
+class Material {    
 public:
     Material() = default;
+    bool is_light;
 };
 
 } // namespace PathRender

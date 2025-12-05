@@ -24,6 +24,8 @@ public:
     }
 
     Vector3 get_normal() const;
+
+    Point3 get_position() const override;
     
 private:
     std::array<Point3, 3> m_vertices;

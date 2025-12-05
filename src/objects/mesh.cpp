@@ -34,14 +34,6 @@ const std::vector<Point3>& Mesh::get_vertices() const {
     return m_vertices; 
 }
 
-void Mesh::set_material(const Material& material) { 
-    m_material = material; 
-}
-
-const Material& Mesh::get_material() const { 
-    return m_material; 
-}
-
 void Mesh::set_color(const Color& color) { 
     m_color = color; 
 }
@@ -76,6 +68,18 @@ std::string Mesh::print_vertices() const {
 
 std::string Mesh::to_string() const {
     return "Mesh(name=" + m_name + ", color=" + m_color.to_string() + "\n" + print_vertices() + "\n" + print_triangles() + ")";
+}
+
+Point3 Mesh::get_position() const {
+    if (m_vertices.empty()) {
+        return Point3(0.0f, 0.0f, 0.0f);
+    }
+    
+    Vector3 sum(0.0f, 0.0f, 0.0f);
+    for (auto vertex : m_vertices) {
+        sum = sum + Vector3(vertex.x, vertex.y, vertex.z);
+    }
+    return sum / static_cast<float>(m_vertices.size());
 }
 
 } // namespace PathRender
