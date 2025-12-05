@@ -4,6 +4,7 @@ file(GLOB_RECURSE PATHRENDER_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/objects/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/scene/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utils/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/rendering/*.cpp
 )
 
 # Criar biblioteca PathRender
@@ -26,6 +27,7 @@ target_compile_definitions(PathRender PUBLIC
     PATHRENDER_BUILD_OBJECTS
     PATHRENDER_BUILD_SCENE
     PATHRENDER_BUILD_UTILS
+    PATHRENDER_BUILD_RENDERING
 )
 
 # C++17 ou superior
