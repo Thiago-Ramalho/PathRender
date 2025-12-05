@@ -31,7 +31,7 @@ std::vector<Color> render_scene(SceneConfig config) {
     std::vector<Color> pixels(width * height);
 
     SingleColor renderer;
-    renderer.render(pixels); // Apenas para demonstrar uso do renderizador (não usado no ray casting)
+    renderer.render(pixels, config); // Apenas para demonstrar uso do renderizador (não usado no ray casting)
     
     // // Renderizar (ray casting simples)
     // for (int j = 0; j < height; ++j) {

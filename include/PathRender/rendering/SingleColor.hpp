@@ -7,7 +7,7 @@ namespace PathRender {
 
 class SingleColor : public IRenderAlgorithm {
 public:
-    void render(std::vector<Color>& buffer) override;
+    void render(std::vector<Color>& buffer, const SceneConfig& config) override;
 };
 
 } // namespace PathRender

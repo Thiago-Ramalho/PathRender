@@ -2,6 +2,7 @@
 #define PATHRENDER_IRENDERALGORITHM_HPP_
 
 #include "PathRender/core/color.hpp"
+#include "PathRender/scene/scene_config.hpp"
 #include <vector>
 
 namespace PathRender {
@@ -10,7 +11,7 @@ class IRenderAlgorithm {
 public:
     virtual ~IRenderAlgorithm() = default;
 
-    virtual void render(std::vector<Color>& buffer) = 0;
+    virtual void render(std::vector<Color>& buffer, const SceneConfig& config) = 0;
 };
 
 } // namespace PathRender

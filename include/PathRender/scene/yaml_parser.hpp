@@ -1,6 +1,8 @@
 #ifndef PATHRENDER_YAML_PARSER_HPP_
 #define PATHRENDER_YAML_PARSER_HPP_
 
+#include "PathRender/objects/plane.hpp"
+#include "PathRender/objects/sphere.hpp"
 #include "PathRender/scene/scene_parser.hpp"
 
 namespace PathRender {
