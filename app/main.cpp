@@ -7,6 +7,7 @@
 #include "PathRender/core/point.hpp"
 #include "PathRender/core/ray.hpp"
 #include "PathRender/core/color.hpp"
+#include "PathRender/rendering/PathTracer.hpp"
 #include "PathRender/rendering/RayCast.hpp"
 #include "PathRender/rendering/SingleColor.hpp"
 #include "PathRender/scene/camera.hpp"
@@ -31,7 +32,7 @@ std::vector<Color> render_scene(SceneConfig config) {
     // Buffer de pixels
     std::vector<Color> pixels(width * height);
 
-    RayCast renderer;
+    PathTracer renderer;
     renderer.render(pixels, config); 
     
     // // Renderizar (ray casting simples)
