@@ -10,7 +10,7 @@ bool Mesh::intersect(const Ray& ray, float t_min, float t_max, HitRecord& hit) c
         HitRecord temp_hit;
         if (triangle.intersect(ray, t_min, closest_so_far, temp_hit)) {
             hit = temp_hit;
-            hit.color = m_color; 
+            hit.object = std::make_shared<Mesh>(*this);
             intersected = true;
             closest_so_far = hit.t;
         }
@@ -35,11 +35,11 @@ const std::vector<Point3>& Mesh::get_vertices() const {
 }
 
 void Mesh::set_color(const Color& color) { 
-    m_color = color; 
+    m_material.color = color; 
 }
 
 const Color& Mesh::get_color() const { 
-    return m_color; 
+    return m_material.color; 
 }
 
 void Mesh::set_name(std::string name) { 
@@ -67,7 +67,7 @@ std::string Mesh::print_vertices() const {
 }
 
 std::string Mesh::to_string() const {
-    return "Mesh(name=" + m_name + ", color=" + m_color.to_string() + "\n" + print_vertices() + "\n" + print_triangles() + ")";
+    return "Mesh(name=" + m_name + ", color=" + m_material.color.to_string() + "\n" + print_vertices() + "\n" + print_triangles() + ")";
 }
 
 Point3 Mesh::get_position() const {

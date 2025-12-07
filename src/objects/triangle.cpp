@@ -3,8 +3,8 @@
 
 namespace PathRender {
 
-Triangle::Triangle(const Point3& A, const Point3& B, const Point3& C, const Color& color)
-    : m_vertices({A, B, C}), m_color(color) {}
+Triangle::Triangle(const Point3& A, const Point3& B, const Point3& C, const Material& material)
+    : m_vertices({A, B, C}) { m_material = material; }
 
 Vector3 Triangle::get_normal() const {
     Vector3 edge1 = m_vertices[1] - m_vertices[0];

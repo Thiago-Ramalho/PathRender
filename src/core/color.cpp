@@ -26,10 +26,21 @@ Color Color::operator+(Color other) const {
     return Color(r + other.r, g + other.g, b + other.b);
 }
 
-Color Color::operator+=(Color other) {
+Color Color::operator / (double scalar) const {
+    return Color(r/scalar, g/scalar, b/scalar);
+}
+
+Color& Color::operator+=(Color other) {
     r += other.r;
     g += other.g;
     b += other.b;
+    return *this;
+}
+
+Color& Color::operator/=(double scalar) {
+    r /= scalar;
+    g /= scalar;
+    b /= scalar;    
     return *this;
 }
 

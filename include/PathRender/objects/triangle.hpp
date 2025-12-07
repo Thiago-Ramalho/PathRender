@@ -4,18 +4,17 @@
 #include "PathRender/objects/objects.hpp"
 #include "PathRender/core/point.hpp"
 #include "PathRender/core/vector.hpp"
-#include "PathRender/core/color.hpp"
 #include <array>
 
 namespace PathRender {
 
 class Triangle : public Object {
 public:
-    Triangle(const Point3& A, const Point3& B, const Point3& C, const Color& color);
+    Triangle(const Point3& A, const Point3& B, const Point3& C, const Material& material);
 
     bool intersect(const Ray& ray, float t_min, float t_max, HitRecord& hit) const override;
     
-    const Color& get_color() const override { return m_color; }
+    const Color& get_color() const override { return m_material.color; }
 
     std::string to_string() const override {
         return "Triangle(A=" + std::to_string(m_vertices[0].x) + "," + std::to_string(m_vertices[0].y) + "," + std::to_string(m_vertices[0].z) +
@@ -29,7 +28,6 @@ public:
     
 private:
     std::array<Point3, 3> m_vertices;
-    Color m_color;
 };
 
 } // namespace PathRender

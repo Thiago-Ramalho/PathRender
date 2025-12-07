@@ -3,8 +3,8 @@
 
 namespace PathRender {
 
-Plane::Plane(const Point3& point, const Vector3& normal, const Color& color)
-    : m_point(point), m_normal(normal.normalized()), m_color(color) {}
+Plane::Plane(const Point3& point, const Vector3& normal, const Material& material)
+    : m_point(point), m_normal(normal.normalized()) { m_material = material; }
 
 bool Plane::intersect(const Ray& ray, float t_min, float t_max, HitRecord& hit) const {
     float denom = ray.direction.dot(m_normal);
@@ -19,14 +19,14 @@ bool Plane::intersect(const Ray& ray, float t_min, float t_max, HitRecord& hit) 
 
     hit.t = t;
     hit.point = ray.at(t);
-    hit.color = m_color;
+    hit.object = std::make_shared<Plane>(*this);
     hit.set_face_normal(ray, m_normal);
 
     return true;
 }
 
 const Color& Plane::get_color() const { 
-    return m_color; 
+    return m_material.color; 
 }
     
 const Point3& Plane::get_point() const { 

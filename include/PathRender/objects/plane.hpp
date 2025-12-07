@@ -20,7 +20,7 @@ public:
      * @param normal Vetor normal ao plano (será normalizado)
      * @param color Cor do plano
      */
-    Plane(const Point3& point, const Vector3& normal, const Color& color);
+    Plane(const Point3& point, const Vector3& normal, const Material& material);
     
     /**
      * @brief Testa interseção entre um raio e o plano
@@ -44,7 +44,6 @@ public:
 private:
     Point3 m_point;   // Ponto no plano
     Vector3 m_normal; // Normal (normalizada)
-    Color m_color;
 };
 
 } // namespace PathRender

@@ -3,8 +3,8 @@
 
 namespace PathRender {
 
-Sphere::Sphere(const Point3& center, float radius, const Color& color)
-    : m_center(center), m_radius(radius), m_color(color) {}
+Sphere::Sphere(const Point3& center, float radius, const Material& material)
+    : m_center(center), m_radius(radius) { m_material = material; }
 
 bool Sphere::intersect(const Ray& ray, float t_min, float t_max, HitRecord& hit) const {
     Vector3 oc = ray.origin - m_center;
@@ -30,7 +30,7 @@ bool Sphere::intersect(const Ray& ray, float t_min, float t_max, HitRecord& hit)
 
     hit.t = root;
     hit.point = ray.at(hit.t);
-    hit.color = m_color;
+    hit.object = std::make_shared<Sphere>(*this);
     Vector3 outward_normal = (hit.point - m_center) / m_radius;
     hit.set_face_normal(ray, outward_normal);
 
@@ -38,7 +38,7 @@ bool Sphere::intersect(const Ray& ray, float t_min, float t_max, HitRecord& hit)
 }
 
 const Color& Sphere::get_color() const { 
-    return m_color; 
+    return m_material.color; 
 }
     
 const Point3& Sphere::get_center() const { 
