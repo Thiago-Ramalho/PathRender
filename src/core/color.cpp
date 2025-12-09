@@ -14,6 +14,15 @@ Color::Color(int red, int green, int blue)
 Color::Color(const Color& other)
     : r(other.r), g(other.g), b(other.b) {}
 
+Color& Color::operator=(const Color& other) {
+    if (this != &other) {
+        r = other.r;
+        g = other.g;
+        b = other.b;
+    }
+    return *this;
+}
+
 Color Color::operator*(Color other) const {
     return Color(r * other.r, g * other.g, b * other.b);
 }
