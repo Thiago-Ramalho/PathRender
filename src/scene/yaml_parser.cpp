@@ -4,33 +4,66 @@ namespace PathRender {
 
 SceneConfig YAMLParser::parse(const std::string& filename) {
     try {
+        std::cout << "Carregando arquivo YAML: " << filename << std::endl;
         YAML::Node root = YAML::LoadFile(filename);
+        
+        if (!root) {
+            throw std::runtime_error("Arquivo YAML vazio ou inválido: " + filename);
+        }
 
+        std::cout << "Parseando configurações de saída..." << std::endl;
         OutputParameters output_params = parse_output(root["output"]);
+        
+        std::cout << "Parseando câmera..." << std::endl;
         Camera camera = parse_camera(root["camera"], output_params);
+        
+        std::cout << "Parseando objetos..." << std::endl;
         Scene scene = parse_objects(root["objects"]);
+        
+        std::cout << "Parseando cor de fundo..." << std::endl;
         Color background_color = parse_background(root["background"]);        
 
         SceneConfig config(scene, camera, output_params, background_color);
+        std::cout << "Arquivo YAML carregado com sucesso!" << std::endl;
         
         return config;
     } catch (const YAML::ParserException &e) {
-        throw std::runtime_error("Erro ao analisar o arquivo YAML: " + std::string(e.what()));
+        throw std::runtime_error("Erro ao analisar o arquivo YAML '" + filename + "': " + std::string(e.what()));
+    } catch (const YAML::BadFile &e) {
+        throw std::runtime_error("Não foi possível abrir o arquivo YAML: " + filename);
+    } catch (const std::exception &e) {
+        throw std::runtime_error("Erro inesperado ao carregar YAML '" + filename + "': " + std::string(e.what()));
     }
 }
 
 OutputParameters YAMLParser::parse_output(const YAML::Node& output_node) {
     if (!output_node.IsDefined()) {
-        throw std::runtime_error("Configuração de saída não encontrada no arquivo YAML.");
+        throw std::runtime_error("Seção 'output' não encontrada no arquivo YAML.");
     }
 
-    // Output parameters
-    OutputParameters output_params;
-    output_params.width = output_node["width"].as<int>();
-    output_params.height = output_node["height"].as<int>();
-    output_params.output_filename = output_node["filename"].as<std::string>();
+    try {
+        OutputParameters output_params;
+        
+        if (!output_node["width"]) {
+            throw std::runtime_error("Campo 'width' não encontrado na seção 'output'.");
+        }
+        output_params.width = output_node["width"].as<int>();
+        
+        if (!output_node["height"]) {
+            throw std::runtime_error("Campo 'height' não encontrado na seção 'output'.");
+        }
+        output_params.height = output_node["height"].as<int>();
+        
+        if (!output_node["filename"]) {
+            throw std::runtime_error("Campo 'filename' não encontrado na seção 'output'.");
+        }
+        output_params.output_filename = output_node["filename"].as<std::string>();
 
-    return output_params;
+        std::cout << "  Resolução: " << output_params.width << "x" << output_params.height << std::endl;
+        return output_params;
+    } catch (const YAML::Exception &e) {
+        throw std::runtime_error("Erro ao parsear seção 'output': " + std::string(e.what()));
+    }
 }
 
 Camera YAMLParser::parse_camera(const YAML::Node& camera_node, const OutputParameters& output_params) {
@@ -70,25 +103,42 @@ std::shared_ptr<Plane> YAMLParser::parse_plane(const YAML::Node& node) {
 
 Scene YAMLParser::parse_objects(const YAML::Node& objects_node) {
     if (!objects_node.IsDefined()) {
-        throw std::runtime_error("Configuração dos objetos não encontrada no arquivo YAML.");
+        throw std::runtime_error("Seção 'objects' não encontrada no arquivo YAML.");
     }
 
-    // Scene objects
-    Scene scene;
-    for (const auto& obj : objects_node) {
-        std::string type = obj["type"].as<std::string>();
+    if (!objects_node.IsSequence()) {
+        throw std::runtime_error("Seção 'objects' deve ser uma lista/array.");
+    }
 
-        if (type == "sphere") {
-            auto sphere = parse_sphere(obj);
-            scene.add_object(sphere);
-        } else if (type == "plane") {
-            auto plane = parse_plane(obj);
-            scene.add_object(plane);
-        } else {
-            throw std::runtime_error("Tipo de objeto desconhecido: " + type);
+    Scene scene;
+    int object_count = 0;
+    
+    for (const auto& obj : objects_node) {
+        try {
+            if (!obj["type"]) {
+                throw std::runtime_error("Campo 'type' não encontrado no objeto " + std::to_string(object_count));
+            }
+            
+            std::string type = obj["type"].as<std::string>();
+            std::cout << "  Processando objeto " << object_count << " do tipo: " << type << std::endl;
+
+            if (type == "sphere") {
+                auto sphere = parse_sphere(obj);
+                scene.add_object(sphere);
+            } else if (type == "plane") {
+                auto plane = parse_plane(obj);
+                scene.add_object(plane);
+            } else {
+                throw std::runtime_error("Tipo de objeto desconhecido: " + type);
+            }
+            
+            object_count++;
+        } catch (const std::exception &e) {
+            throw std::runtime_error("Erro ao parsear objeto " + std::to_string(object_count) + ": " + std::string(e.what()));
         }
     }
 
+    std::cout << "  Total de objetos carregados: " << object_count << std::endl;
     return scene;
 }
 

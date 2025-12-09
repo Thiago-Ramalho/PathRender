@@ -7,7 +7,7 @@
 #include "PathRender/core/point.hpp"
 #include "PathRender/core/ray.hpp"
 #include "PathRender/core/color.hpp"
-#include "PathRender/rendering/SingleColor.hpp"
+#include "PathRender/rendering/RayCast.hpp"
 #include "PathRender/scene/camera.hpp"
 #include "PathRender/scene/obj_parser.hpp"
 #include "PathRender/scene/scene.hpp"
@@ -30,8 +30,8 @@ std::vector<Color> render_scene(SceneConfig config) {
     // Buffer de pixels
     std::vector<Color> pixels(width * height);
 
-    SingleColor renderer;
-    renderer.render(pixels, config); // Apenas para demonstrar uso do renderizador (não usado no ray casting)
+    RayCast renderer;
+    renderer.render(pixels, config); 
     
     // // Renderizar (ray casting simples)
     // for (int j = 0; j < height; ++j) {
@@ -82,9 +82,17 @@ std::string get_scene_filename_from_args(int argc, char** argv) {
 std::filesystem::path extract_scene_path(int argc, char** argv) {
     std::string scene_filename = get_scene_filename_from_args(argc, argv);
     
-    std::filesystem::path exe_path = std::filesystem::canonical(argv[0]).parent_path();
-    auto project_root = exe_path.parent_path().parent_path();
-    auto scene_path = project_root / "scenes" / scene_filename;
+    std::filesystem::path scene_path(scene_filename);
+    
+    // Se o caminho é relativo, tenta construir baseado no projeto
+    if (scene_path.is_relative() && scene_path.filename() == scene_path) {
+        std::filesystem::path exe_path = std::filesystem::canonical(argv[0]).parent_path();
+        auto project_root = exe_path.parent_path().parent_path();
+        scene_path = project_root / "scenes" / scene_filename;
+    } else {
+        // Se já é um caminho mais complexo, usa como está
+        scene_path = std::filesystem::absolute(scene_path);
+    }
 
     if (!std::filesystem::exists(scene_path)) {
         std::cerr << "Scene file not found: " << scene_path << std::endl;
@@ -99,9 +107,24 @@ int main(int argc, char** argv) {
     try {
         auto scene_path = extract_scene_path(argc, argv);
         
-        // Parsear configuração da cena
-        OBJParser parser;
-        SceneConfig config = parser.parse(scene_path.string());
+        // Solução provisória para selecionar parser de acordo com cena ser .yaml ou .obj
+        std::string extension = scene_path.extension().string();
+        std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
+        
+        SceneConfig config = [&]() {
+            if (extension == ".yml" || extension == ".yaml") {
+                std::cout << "Usando YAMLParser para arquivo: " << scene_path.filename() << std::endl;
+                YAMLParser yaml_parser;
+                return yaml_parser.parse(scene_path.string());
+            } else if (extension == ".obj") {
+                std::cout << "Usando OBJParser para arquivo: " << scene_path.filename() << std::endl;
+                OBJParser obj_parser;
+                return obj_parser.parse(scene_path.string());
+            } else {
+                throw std::runtime_error("Formato de arquivo não suportado: " + extension + 
+                                       ". Use .yml, .yaml ou .obj");
+            }
+        }();
         
         // Renderizar cena com raycast simples
         std::vector<Color> pixels = render_scene(config);
@@ -115,7 +138,6 @@ int main(int argc, char** argv) {
         save_ppm(filename, config.output_params.width, config.output_params.height, pixels);
         
         std::cout << "=== Renderização completa! ===" << std::endl;
-        std::cout << "Abra o arquivo 'output.ppm' com um visualizador de imagens." << std::endl;
         
     } catch(const std::exception& e) {
         std::cerr << e.what() << std::endl;

@@ -1,15 +1,15 @@
-#ifndef PATHRENDER_SINGLECOLOR_HPP_
-#define PATHRENDER_SINGLECOLOR_HPP_
+#ifndef PATHRENDER_RAYCAST_HPP_
+#define PATHRENDER_RAYCAST_HPP_
 
 #include "PathRender/rendering/IRenderAlgorithm.hpp"
 
 namespace PathRender {
 
-class SingleColor : public IRenderAlgorithm {
+class RayCast : public IRenderAlgorithm {
 public:
     void render(std::vector<Color>& buffer, const SceneConfig& config) override;
 };
 
 } // namespace PathRender
 
-#endif // PATHRENDER_SINGLECOLOR_HPP_
+#endif // PATHRENDER_RAYCAST_HPP_
