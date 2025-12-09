@@ -8,7 +8,6 @@
 #include "PathRender/core/ray.hpp"
 #include "PathRender/core/color.hpp"
 #include "PathRender/rendering/RayCast.hpp"
-#include "PathRender/rendering/SingleColor.hpp"
 #include "PathRender/scene/camera.hpp"
 #include "PathRender/scene/obj_parser.hpp"
 #include "PathRender/scene/scene.hpp"
