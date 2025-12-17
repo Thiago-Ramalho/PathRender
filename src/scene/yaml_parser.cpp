@@ -88,8 +88,9 @@ std::shared_ptr<Sphere> YAMLParser::parse_sphere(const YAML::Node& node) {
     double radius = node["radius"].as<double>();
     Point3 color_point = parse_point3(node["color"]);
     Color color(color_point.x, color_point.y, color_point.z);
+    Material material = {false, color, Color(1.0, 1.0, 1.0)};
 
-    return std::make_shared<Sphere>(center, radius, color);
+    return std::make_shared<Sphere>(center, radius, material);
 }
 
 std::shared_ptr<Plane> YAMLParser::parse_plane(const YAML::Node& node) {
@@ -97,8 +98,9 @@ std::shared_ptr<Plane> YAMLParser::parse_plane(const YAML::Node& node) {
     Vector3 normal = parse_vector3(node["normal"]);
     Point3 color_point = parse_point3(node["color"]);
     Color color(color_point.x, color_point.y, color_point.z);
+    Material material = {false, color, Color(1.0, 1.0, 1.0)};
 
-    return std::make_shared<Plane>(point, normal, color);
+    return std::make_shared<Plane>(point, normal, material);
 }
 
 Scene YAMLParser::parse_objects(const YAML::Node& objects_node) {

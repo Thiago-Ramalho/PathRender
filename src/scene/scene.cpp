@@ -10,6 +10,10 @@ void Scene::add_light(const Light& light) {
     m_lights.push_back(light);
 }
 
+const Light& Scene::get_light(size_t index) const {
+    return m_lights.at(index);
+}
+
 bool Scene::intersect(const Ray& ray, float t_min, float t_max, HitRecord& hit) const {
     HitRecord temp_hit;
     bool hit_anything = false;

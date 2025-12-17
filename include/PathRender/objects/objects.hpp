@@ -10,6 +10,8 @@
 
 namespace PathRender {
 
+class Object;
+    
 /**
  * @struct HitRecord
  * @brief Armazena informações sobre uma interseção entre um raio e um objeto
@@ -18,7 +20,7 @@ struct HitRecord {
     float t;              // Parâmetro t do raio onde ocorreu a interseção
     Point3 point;         // Ponto de interseção no espaço 3D
     Vector3 normal;       // Normal da superfície no ponto de interseção
-    Color color;          // Cor do objeto no ponto de interseção
+    std::shared_ptr<Object> object; // Ponteiro para o objeto atingido
     bool front_face;      // True se o raio atingiu a face frontal
     
     /**
@@ -67,7 +69,7 @@ public:
 
     virtual Point3 get_position() const = 0;
 
-private:
+protected:
     Material m_material;
 };
 

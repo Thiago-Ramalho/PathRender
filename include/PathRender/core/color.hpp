@@ -55,7 +55,11 @@ namespace PathRender {
 
         Color operator+(Color other) const;
 
-        Color operator+=(Color other);
+        Color operator/(double scalar) const;
+
+        Color& operator+=(Color other);
+
+        Color& operator/=(double scalar);
 
         Color& clamp();
 

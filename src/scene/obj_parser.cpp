@@ -32,8 +32,8 @@ SceneConfig OBJParser::parse_scene(const std::string& filename) {
 
     Scene scene;
     OutputParameters out_params;
-    out_params.width = 800;
-    out_params.height = 800;
+    out_params.width = 400;
+    out_params.height = 400;
     out_params.output_filename = "output.ppm";
     Color bg_color(0, 0, 0);
 
@@ -76,12 +76,24 @@ SceneConfig OBJParser::parse_scene(const std::string& filename) {
 
             if (current_name != "light") {
                 // Start a new mesh
+                Color ferro    = Color(0.56f, 0.57f, 0.58f);
+                Color aluminio = Color(0.91f, 0.92f, 0.92f);
+                Color titanio  = Color(0.54f, 0.49f, 0.42f);
+
+                // Metais Coloridos / Preciosos
+                Color prata    = Color(0.97f, 0.96f, 0.91f);
+                Color ouro     = Color(1.00f, 0.71f, 0.29f);
+                Color cobre    = Color(0.95f, 0.64f, 0.54f);
                 current_mesh->set_name(current_name);
-                current_mesh->set_color(get_color_for_material(current_name));
+                // current_mesh->set_color(get_color_for_material(current_name));
+                bool is_light = current_name == "ceiling";
+                current_mesh->set_material({
+                    is_light, 
+                    get_color_for_material(current_name), 
+                
+                    titanio
+                });
                 scene.add_object(current_mesh);
-            }
-            if( current_name == "ceiling"){
-                current_mesh->set_material({true});
             }
         }
         else if (starts_with(line, "lp ")) {
@@ -107,7 +119,7 @@ SceneConfig OBJParser::parse_scene(const std::string& filename) {
             Point3 p1 = global_vertices[idx[1] - 1];
             Point3 p2 = global_vertices[idx[2] - 1];
             
-            Triangle tri(p0, p1, p2, current_mesh->get_color());
+            Triangle tri(p0, p1, p2, current_mesh->get_material() );
             current_mesh->add_triangle(tri);
         }
         else if (starts_with(line, "g ")) {
@@ -138,7 +150,7 @@ Color OBJParser::get_color_for_material(const std::string& mtl_name) {
     if (mtl_name == "green") return Color(0.12f, 0.45f, 0.15f); // Right wall
     if (mtl_name == "red") return Color(0.65f, 0.05f, 0.05f);   // Left wall
     if (mtl_name == "short_box") return Color(0.0f, 0.0f, 1.0f);
-    if (mtl_name == "tall_box") return Color(0.5f, 0.5f, 0.0f);
+    if (mtl_name == "tall_box") return Color(0.5f, 0.25f, 0.0f);
     if (mtl_name == "light") return Color(10.0f, 10.0f, 10.0f); // Bright emission
     return Color(0.5f, 0.5f, 0.5f); // Default
 }
