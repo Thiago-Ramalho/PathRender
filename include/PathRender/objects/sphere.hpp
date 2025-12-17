@@ -19,7 +19,7 @@ public:
      * @param radius Raio da esfera
      * @param color Cor da esfera
      */
-    Sphere(const Point3& center, float radius, const Color& color);
+    Sphere(const Point3& center, float radius, const Material& material);
     
     /**
      * @brief Testa interseção entre um raio e a esfera
@@ -42,7 +42,6 @@ public:
 private:
     Point3 m_center;
     float m_radius;
-    Color m_color;
 };
 
 } // namespace PathRender

@@ -24,6 +24,8 @@ public:
     void add_object(std::shared_ptr<Object> object);
 
     void add_light(const Light& light);
+
+    const Light& get_light(size_t index) const;
     
     /**
      * @brief Testa interseção do raio com todos os objetos da cena

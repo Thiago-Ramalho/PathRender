@@ -26,7 +26,9 @@ Camera::Camera(const Point3& position, const Point3& look_at, const Vector3& up,
 }
 
 Ray Camera::get_ray(float u, float v) const {
-    Vector3 dir = (m_lower_left + m_horizontal * u + m_vertical * v) - m_origin;
+    Point3 pixel_center = m_lower_left + m_horizontal * u + m_vertical * v; 
+    // pixel_center += m_horizontal/2.0 * (random() - .5) +  m_vertical/2.0 * (random() - .5);
+    Vector3 dir = pixel_center - m_origin;
     return Ray(m_origin, dir.normalized());
 }
 

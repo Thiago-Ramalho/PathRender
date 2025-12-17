@@ -40,7 +40,6 @@ private:
     std::string m_name;
     std::vector<Triangle> m_triangles;
     std::vector<Point3> m_vertices;
-    Color m_color;
 };
 
 } // namespace PathRender
