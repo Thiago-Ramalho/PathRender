@@ -19,6 +19,7 @@ protected:
 
   SceneConfig parse_scene(const std::string& filename);
   Color get_color_for_material(const std::string& mtl_name);
+  Material get_material_properties(const std::string& mtl_name);
 };
 
 } // namespace PathRender

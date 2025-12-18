@@ -76,23 +76,8 @@ SceneConfig OBJParser::parse_scene(const std::string& filename) {
 
             if (current_name != "light") {
                 // Start a new mesh
-                Color ferro    = Color(0.56f, 0.57f, 0.58f);
-                Color aluminio = Color(0.91f, 0.92f, 0.92f);
-                Color titanio  = Color(0.54f, 0.49f, 0.42f);
-
-                // Metais Coloridos / Preciosos
-                Color prata    = Color(0.97f, 0.96f, 0.91f);
-                Color ouro     = Color(1.00f, 0.71f, 0.29f);
-                Color cobre    = Color(0.95f, 0.64f, 0.54f);
                 current_mesh->set_name(current_name);
-                // current_mesh->set_color(get_color_for_material(current_name));
-                bool is_light = current_name == "ceiling";
-                current_mesh->set_material({
-                    is_light, 
-                    get_color_for_material(current_name), 
-                
-                    titanio
-                });
+                current_mesh->set_material(get_material_properties(current_name));
                 scene.add_object(current_mesh);
             }
         }
@@ -153,6 +138,34 @@ Color OBJParser::get_color_for_material(const std::string& mtl_name) {
     if (mtl_name == "tall_box") return Color(0.5f, 0.25f, 0.0f);
     if (mtl_name == "light") return Color(10.0f, 10.0f, 10.0f); // Bright emission
     return Color(0.5f, 0.5f, 0.5f); // Default
+}
+
+Material OBJParser::get_material_properties(const std::string& mtl_name) {
+    if (mtl_name == "floor"){
+        return Material(false, Color(0.7f, 0.7f, 0.7f), 0.3f, 0.7f, 0.0f, 0.0f, 5.0f);
+    } 
+    if (mtl_name == "ceiling") {
+        return Material(true, Color(0.7f, 0.7f, 0.7f), 0.3f, 0.7f, 0.0f, 0.0f, 5.0f);
+    }
+    if (mtl_name == "back") {
+        return Material(false, Color(0.7f, 0.7f, 0.7f), 0.3f, 0.7f, 0.0f, 0.0f, 5.0f);
+    }
+    if (mtl_name == "green") {
+        return Material(false, Color(0.12f, 0.45f, 0.15f), 0.3f, 0.7f, 0.0f, 0.0f, 5.0f);
+    }
+    if (mtl_name == "red") {
+        return Material(false, Color(0.65f, 0.05f, 0.05f), 0.3f, 0.7f, 0.0f, 0.0f, 5.0f);
+    }
+    if (mtl_name == "short_box") {
+        return Material(false, Color(0.0f, 0.0f, 1.0f), 0.3f, 0.7f, 0.7f, 0.0f, 5.0f);
+    }
+    if (mtl_name == "tall_box") {
+        return Material(false, Color(0.5f, 0.25f, 0.0f), 0.3f, 0.7f, 0.0f, 0.0f, 5.0f);
+    }
+    if (mtl_name == "light") {
+        return Material(true, Color(10.0f, 10.0f, 10.0f), 0.0f, 0.0f, 0.0f, 0.0f, 5.0f);
+    }
+    return Material(false, Color(0.7f, 0.7f, 0.7f), 0.3f, 0.7f, 0.0f, 0.0f, 5.0f); Color(0.5f, 0.5f, 0.5f); // Default
 }
 
 } // namespace PathRender
