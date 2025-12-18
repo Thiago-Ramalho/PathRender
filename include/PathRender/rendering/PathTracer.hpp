@@ -2,11 +2,13 @@
 #define PATHRENDER_PATHTRACER_HPP_
 
 #include "PathRender/rendering/IRenderAlgorithm.hpp"
+#include <random>
 
 namespace PathRender {
 
 class PathTracer : public IRenderAlgorithm {
 public:
+    PathTracer();
     void render(std::vector<Color>& buffer, const SceneConfig& config) override;
 private:
     Color trace_path(const Ray& ray, int depth, const Scene& scene);
@@ -17,11 +19,11 @@ private:
     float reflectance(float cosine, float ref_idx);
     Vector3 RandomUnitVector();
     const int max_depth = 5;
-    int64_t seed_state;
+    std::mt19937 rng;
 
     double random() {
-        seed_state = (1103515245 * seed_state + 12345) % 2147483647;
-        return static_cast<float>(seed_state) / static_cast<float>(2147483647);
+        std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+        return dist(rng);
     };
 
 };

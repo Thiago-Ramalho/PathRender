@@ -2,6 +2,8 @@
 
 namespace PathRender {
 
+PathTracer::PathTracer() : rng(std::random_device{}()) {}
+
 void PathTracer::render(std::vector<Color>& buffer, const SceneConfig& config) {
     std::cout << "PATH TRACER RENDER" << std::endl;
     const Scene& scene = config.scene;
