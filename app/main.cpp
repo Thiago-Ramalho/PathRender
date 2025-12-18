@@ -33,36 +33,6 @@ std::vector<Color> render_scene(SceneConfig config) {
 
     PathTracer renderer;
     renderer.render(pixels, config); 
-    
-    // // Renderizar (ray casting simples)
-    // for (int j = 0; j < height; ++j) {
-    //     // Progresso
-    //     if (j % 50 == 0) {
-    //         std::cout << "Progresso: " << (100 * j / height) << "%" << std::endl;
-    //     }
-        
-    //     for (int i = 0; i < width; ++i) {
-    //         // Coordenadas normalizadas [0, 1]
-    //         float u = static_cast<float>(i) / (width - 1);
-    //         float v = static_cast<float>(j) / (height - 1);
-            
-    //         // Gerar raio da câmera
-    //         Ray ray = camera.get_ray(u, v);
-            
-    //         // Testar interseção com a cena
-    //         HitRecord hit;
-    //         Color pixel_color = background_color; // cor de fundo (céu azulado)
-            
-    //         if (scene.intersect(ray, 0.001f, 10000000000.0f, hit)) {
-    //             // Se houver interseção, usar a cor do objeto (sem iluminação)
-    //             pixel_color = hit.color;
-    //         }
-            
-    //         // Armazenar pixel (invertendo y para PPM)
-    //         pixels[(height - 1 - j) * width + i] = pixel_color;
-    //     }
-    // }
-    
     std::cout << "Progresso: 100%" << std::endl;
     return pixels;
 }
