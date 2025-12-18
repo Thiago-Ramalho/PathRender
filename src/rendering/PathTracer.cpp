@@ -1,4 +1,6 @@
 #include "PathRender/rendering/PathTracer.hpp"
+#include <iostream>
+#include <iomanip>
 
 namespace PathRender {
 
@@ -11,6 +13,8 @@ void PathTracer::render(std::vector<Color>& buffer, const SceneConfig& config) {
     const int width = config.output_params.width;
     const int height = config.output_params.height;
     const int number_of_rays = 50;
+    const int total_pixels = width * height;
+    int pixels_rendered = 0;
 
     for (int j = 0; j < height; ++j) {
         for (int i = 0; i < width; ++i) {
@@ -34,8 +38,31 @@ void PathTracer::render(std::vector<Color>& buffer, const SceneConfig& config) {
             pixel_color = Color(sqrt(pixel_color.r), sqrt(pixel_color.g), sqrt(pixel_color.b));
 
             buffer[(height - 1 - j) * width + i] = pixel_color;
+
+            // Atualizar barra de progresso
+            ++pixels_rendered;
+            if (pixels_rendered % 100 == 0 || pixels_rendered == total_pixels) {
+                float progress = (float)pixels_rendered / total_pixels * 100.0f;
+                int bar_width = 50;
+                int filled = (int)(progress / 100.0f * bar_width);
+                
+                std::cout << "\rProgresso: [";
+                for (int k = 0; k < bar_width; ++k) {
+                    if (k < filled) {
+                        std::cout << "█";
+                    } else {
+                        std::cout << "░";
+                    }
+                }
+                std::cout << "] " << std::fixed << std::setprecision(1) << progress << "% (" 
+                         << pixels_rendered << "/" << total_pixels << ")";
+                std::cout.flush();
+            }
         }
     }
+    
+    // Nova linha após completar o progresso
+    std::cout << std::endl;
 }
 
 Vector3 PathTracer::random_unit_vector_in_hemisphere_of(const Vector3& normal) {
