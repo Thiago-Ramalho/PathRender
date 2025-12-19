@@ -7,6 +7,7 @@
 #include "PathRender/scene/scene_parser.hpp"
 #include "PathRender/core/AnisotropicMatteBRDF.hpp"
 #include "PathRender/core/PhongBRDF.hpp"
+#include "PathRender/core/DieletricBRDF.hpp"
 
 namespace PathRender {
 

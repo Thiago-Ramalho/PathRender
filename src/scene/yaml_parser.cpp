@@ -101,6 +101,10 @@ Material YAMLParser::parse_material(const YAML::Node& node) {
         float nv = node["roughness_v"] ? node["roughness_v"].as<float>() : 0.5f;
         return Material(is_light, std::make_shared<AnisotropicMatteBRDF>(color, nu, nv));
     }
+    else if (type == "dielectric") {
+        float refractive_index = node["refractive_index"] ? node["refractive_index"].as<float>() : 1.5f;
+        return Material(is_light, std::make_shared<DielectricBRDF>(Color(1.0, 1.0, 1.0), refractive_index));
+    }
     
     // Default to Phong
     return Material(is_light, std::make_shared<PhongBRDF>(color));
