@@ -1,0 +1,110 @@
+# Cornell Box with Glass Objects - Caustics Test Scene
+# Features transparent glass box and sphere to demonstrate caustic effects
+
+camera:
+  position: [278, 273, -800]
+  look_at: [278, 273, 0]
+  up: [0, 1, 0]
+  fov: 40
+  
+output:
+  width: 400
+  height: 400
+  filename: "cornell_caustics.ppm"
+
+background:
+  color: [0, 0, 0]
+
+objects:
+  # --- WALLS ---
+  - type: quad # Floor
+    points: [[552.8, 0, 0], [0, 0, 0], [0, 0, 559.2], [549.6, 0, 559.2]]
+    material: 
+      type: phong
+      color: [0.8, 0.8, 0.8]  # Slightly brighter to show caustics better
+
+  - type: quad # Ceiling
+    points: [[556, 548.8, 0], [556, 548.8, 559.2], [0, 548.8, 559.2], [0, 548.8, 0]]
+    material: 
+      type: phong
+      color: [0.8, 0.8, 0.8]
+
+  - type: quad # Back Wall
+    points: [[549.6, 0, 559.2], [0, 0, 559.2], [0, 548.8, 559.2], [556, 548.8, 559.2]]
+    material: 
+      type: phong
+      color: [0.8, 0.8, 0.8]
+
+  - type: quad # Right Wall (Green)
+    points: [[0, 0, 559.2], [0, 0, 0], [0, 548.8, 0], [0, 548.8, 559.2]]
+    material: 
+      type: phong
+      color: [0.12, 0.45, 0.15]
+
+  - type: quad # Left Wall (Red)
+    points: [[552.8, 0, 0], [549.6, 0, 559.2], [556, 548.8, 559.2], [556, 548.8, 0]]
+    material: 
+      type: phong
+      color: [0.65, 0.05, 0.05]
+
+  # --- LIGHT ---
+  - type: quad
+    points: [[343, 548.7, 227], [343, 548.7, 332], [213, 548.7, 332], [213, 548.7, 227]]
+    material:
+      type: phong
+      color: [20, 20, 20] # Bright light for strong caustics
+      is_light: true
+
+  # --- GLASS SPHERE (Left side) ---
+  - type: sphere
+    center: [180, 120, 280]
+    radius: 80
+    material:
+      type: dielectric
+      color: [0.98, 0.98, 1.0]  # Clear glass with slight blue tint
+      refractive_index: 1.52    # Crown glass
+
+  # --- GLASS BOX (Right side) ---
+  # Glass box made of 6 quads forming a hollow cube
+  
+  # Front face (closest to camera)
+  - type: quad
+    points: [[350, 50, 200], [450, 50, 200], [450, 200, 200], [350, 200, 200]]
+    material: &glass_material
+      type: dielectric
+      color: [0.95, 1.0, 0.95]  # Slight green tint
+      refractive_index: 1.5     # Standard glass
+  
+  # Back face
+  - type: quad
+    points: [[450, 50, 300], [350, 50, 300], [350, 200, 300], [450, 200, 300]]
+    material: *glass_material
+  
+  # Left face
+  - type: quad
+    points: [[350, 50, 300], [350, 50, 200], [350, 200, 200], [350, 200, 300]]
+    material: *glass_material
+  
+  # Right face
+  - type: quad
+    points: [[450, 50, 200], [450, 50, 300], [450, 200, 300], [450, 200, 200]]
+    material: *glass_material
+  
+  # Top face
+  - type: quad
+    points: [[350, 200, 200], [450, 200, 200], [450, 200, 300], [350, 200, 300]]
+    material: *glass_material
+  
+  # Bottom face
+  - type: quad
+    points: [[450, 50, 200], [350, 50, 200], [350, 50, 300], [450, 50, 300]]
+    material: *glass_material
+
+  # --- SMALL OPAQUE SPHERE INSIDE GLASS BOX (for interesting refraction) ---
+  - type: sphere
+    center: [400, 125, 250]
+    radius: 25
+    material:
+      type: phong
+      color: [0.9, 0.1, 0.1]  # Bright red
+      shininess: 100          # Very shiny
