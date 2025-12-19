@@ -83,46 +83,64 @@ Camera YAMLParser::parse_camera(const YAML::Node& camera_node, const OutputParam
     return camera;
 }
 
-// 1. New Material Parser
-Material YAMLParser::parse_material(const YAML::Node& node) {
-    // Default Material
-    if (!node.IsDefined()) {
-        return Material(false, std::make_shared<PhongBRDF>(Color(0.5, 0.5, 0.5)));
+Color YAMLParser::parse_color(const YAML::Node& node) {
+    if (!node.IsSequence() || node.size() != 3) {
+        // Fallback or error if the YAML is malformed
+        std::cerr << "Warning: Invalid color format. Expected [r, g, b]. Defaulting to white." << std::endl;
+        return Color{1.0f, 1.0f, 1.0f}; 
     }
 
-    std::string type = node["type"] ? node["type"].as<std::string>() : "phong";
-    Point3 color_pt = parse_point3(node["color"]);
-    Color color(color_pt.x, color_pt.y, color_pt.z);
-    
-    bool is_light = node["is_light"] && node["is_light"].as<bool>();
+    float r = node[0].as<float>();
+    float g = node[1].as<float>();
+    float b = node[2].as<float>();
 
-    if (type == "anisotropic") {
-        float nu = node["roughness_u"] ? node["roughness_u"].as<float>() : 0.5f;
-        float nv = node["roughness_v"] ? node["roughness_v"].as<float>() : 0.5f;
-        return Material(is_light, std::make_shared<AnisotropicMatteBRDF>(color, nu, nv));
-    }
-    
-    // Default to Phong
-    return Material(is_light, std::make_shared<PhongBRDF>(color));
+    return Color{r, g, b};
 }
 
-// 2. Updated Object Parsers to use parse_material
+Material YAMLParser::parse_material(const YAML::Node& node) {
+    Material mat;
+    
+    // Default values
+    Color color = {1.0f, 1.0f, 1.0f}; // Default white
+    if (node["color"]) {
+        color = parse_color(node["color"]);
+    }
+    
+    std::string type = "phong"; // Default type
+    if (node["type"]) {
+        type = node["type"].as<std::string>();
+    }
+
+    if (node["is_light"] && node["is_light"].as<bool>()) {
+        mat.is_light = true;
+        mat.brdf = std::make_shared<PhongBRDF>(color); 
+        return mat;
+    }
+
+    if (type == "phong") {
+        mat.brdf = std::make_shared<PhongBRDF>(color);
+    } else if (type == "anisotropic") {
+        float nu = node["roughness_u"] ? node["roughness_u"].as<float>() : 0.1f;
+        float nv = node["roughness_v"] ? node["roughness_v"].as<float>() : 1.0f;
+        mat.brdf = std::make_shared<AnisotropicMatteBRDF>(color, nu, nv);
+    } else if (type == "dielectric") {
+        float ior = node["ior"] ? node["ior"].as<float>() : 1.5f;
+        mat.brdf = std::make_shared<DielectricBRDF>(color, ior);
+    } else {
+        // Fallback
+        std::cerr << "Warning: Unknown material type '" << type << "', defaulting to Phong." << std::endl;
+        mat.brdf = std::make_shared<PhongBRDF>(color);
+    }
+
+    return mat;
+}
+
 std::shared_ptr<Sphere> YAMLParser::parse_sphere(const YAML::Node& node) {
     Point3 center = parse_point3(node["center"]);
     double radius = node["radius"].as<double>();
     Material material = parse_material(node["material"]);
     return std::make_shared<Sphere>(center, radius, material);
 }
-
-// std::shared_ptr<Sphere> YAMLParser::parse_sphere(const YAML::Node& node) {
-//     Point3 center = parse_point3(node["center"]);
-//     double radius = node["radius"].as<double>();
-//     Point3 color_point = parse_point3(node["color"]);
-//     Color color(color_point.x, color_point.y, color_point.z);
-//     Material material = {false, std::make_shared<PhongBRDF>(color)};
-
-//     return std::make_shared<Sphere>(center, radius, material);
-// }
 
 std::shared_ptr<Plane> YAMLParser::parse_plane(const YAML::Node& node) {
     Point3 point = parse_point3(node["point"]);
@@ -131,17 +149,6 @@ std::shared_ptr<Plane> YAMLParser::parse_plane(const YAML::Node& node) {
     return std::make_shared<Plane>(point, normal, material);
 }
 
-// std::shared_ptr<Plane> YAMLParser::parse_plane(const YAML::Node& node) {
-//     Point3 point = parse_point3(node["point"]);
-//     Vector3 normal = parse_vector3(node["normal"]);
-//     Point3 color_point = parse_point3(node["color"]);
-//     Color color(color_point.x, color_point.y, color_point.z);
-//     Material material = {false, std::make_shared<PhongBRDF>(color)};
-
-//     return std::make_shared<Plane>(point, normal, material);
-// }
-
-// 3. New Quad Parser (Converts 4 points -> 2 Triangles)
 std::shared_ptr<Mesh> YAMLParser::parse_quad(const YAML::Node& node) {
     if (!node["points"] || node["points"].size() != 4) {
         throw std::runtime_error("Quad object must have exactly 4 points.");
@@ -149,7 +156,6 @@ std::shared_ptr<Mesh> YAMLParser::parse_quad(const YAML::Node& node) {
 
     auto mesh = std::make_shared<Mesh>();
 
-    // 1. Parse and store Vertices
     std::vector<Point3> p;
     for (int i = 0; i < 4; ++i) {
         Point3 pt = parse_point3(node["points"][i]);
@@ -157,45 +163,18 @@ std::shared_ptr<Mesh> YAMLParser::parse_quad(const YAML::Node& node) {
         mesh->add_vertex(pt); // Add to mesh storage (matches OBJParser logic)
     }
 
-    // 2. Parse Material
     Material material = parse_material(node["material"]);
     mesh->set_material(material); // Set material on the Mesh wrapper
 
-    // 3. Create Triangles
-    // Triangle 1: Vertices 0, 1, 2
     Triangle t1(p[0], p[1], p[2], material);
     mesh->add_triangle(t1);
 
-    // Triangle 2: Vertices 0, 2, 3
     Triangle t2(p[0], p[2], p[3], material);
     mesh->add_triangle(t2);
 
     return mesh;
-
-
-
-    // std::vector<std::shared_ptr<Object>> triangles;
-    
-    // if (!node["points"] || node["points"].size() != 4) {
-    //     throw std::runtime_error("Quad object must have exactly 4 points.");
-    // }
-
-    // std::vector<Point3> p;
-    // for (int i = 0; i < 4; ++i) {
-    //     p.push_back(parse_point3(node["points"][i]));
-    // }
-
-    // Material material = parse_material(node["material"]);
-
-    // // Create two triangles: (0,1,2) and (0,2,3)
-    // // Assuming you have a Triangle class: Triangle(p0, p1, p2, material)
-    // triangles.push_back(std::make_shared<Triangle>(p[0], p[1], p[2], material));
-    // triangles.push_back(std::make_shared<Triangle>(p[0], p[2], p[3], material));
-
-    // return triangles;
 }
 
-// 4. Updated Main Object Loop
 Scene YAMLParser::parse_objects(const YAML::Node& objects_node) {
     if (!objects_node.IsDefined() || !objects_node.IsSequence()) {
         throw std::runtime_error("Seção 'objects' inválida.");
@@ -215,62 +194,14 @@ Scene YAMLParser::parse_objects(const YAML::Node& objects_node) {
         } else if (type == "plane") {
             scene.add_object(parse_plane(obj));
         } else if (type == "quad") {
-            // Updated logic: Receive a single Mesh object instead of a list of triangles
             std::shared_ptr<Mesh> mesh = parse_quad(obj);
             scene.add_object(mesh);
-
-            // // Quads return multiple triangles
-            // auto tris = parse_quad(obj);
-            // for (auto& tri : tris) {
-            //     scene.add_object(tri);
-            // }
         }
         object_count++;
     }
 
     return scene;
 }
-
-// Scene YAMLParser::parse_objects(const YAML::Node& objects_node) {
-//     if (!objects_node.IsDefined()) {
-//         throw std::runtime_error("Seção 'objects' não encontrada no arquivo YAML.");
-//     }
-
-//     if (!objects_node.IsSequence()) {
-//         throw std::runtime_error("Seção 'objects' deve ser uma lista/array.");
-//     }
-
-//     Scene scene;
-//     int object_count = 0;
-    
-//     for (const auto& obj : objects_node) {
-//         try {
-//             if (!obj["type"]) {
-//                 throw std::runtime_error("Campo 'type' não encontrado no objeto " + std::to_string(object_count));
-//             }
-            
-//             std::string type = obj["type"].as<std::string>();
-//             std::cout << "  Processando objeto " << object_count << " do tipo: " << type << std::endl;
-
-//             if (type == "sphere") {
-//                 auto sphere = parse_sphere(obj);
-//                 scene.add_object(sphere);
-//             } else if (type == "plane") {
-//                 auto plane = parse_plane(obj);
-//                 scene.add_object(plane);
-//             } else {
-//                 throw std::runtime_error("Tipo de objeto desconhecido: " + type);
-//             }
-            
-//             object_count++;
-//         } catch (const std::exception &e) {
-//             throw std::runtime_error("Erro ao parsear objeto " + std::to_string(object_count) + ": " + std::string(e.what()));
-//         }
-//     }
-
-//     std::cout << "  Total de objetos carregados: " << object_count << std::endl;
-//     return scene;
-// }
 
 Color YAMLParser::parse_background(const YAML::Node& background_node) {
     if (!background_node.IsDefined()) {

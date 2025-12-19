@@ -1,0 +1,83 @@
+camera:
+  position: [278, 273, -800]
+  look_at: [278, 273, 0]
+  up: [0, 1, 0]
+  fov: 40
+  
+output:
+  width: 400
+  height: 400
+  filename: "cornell_spheres.ppm"
+
+background:
+  color: [0, 0, 0]
+
+objects:
+  # --- WALLS (Standard Cornell Box) ---
+  - type: quad # Floor
+    points: [[552.8, 0, 0], [0, 0, 0], [0, 0, 559.2], [549.6, 0, 559.2]]
+    material: 
+      type: phong
+      color: [0.7, 0.7, 0.7]
+
+  - type: quad # Ceiling
+    points: [[556, 548.8, 0], [556, 548.8, 559.2], [0, 548.8, 559.2], [0, 548.8, 0]]
+    material: 
+      type: phong
+      color: [0.7, 0.7, 0.7]
+
+  - type: quad # Back Wall
+    points: [[549.6, 0, 559.2], [0, 0, 559.2], [0, 548.8, 559.2], [556, 548.8, 559.2]]
+    material: 
+      type: phong
+      color: [0.7, 0.7, 0.7]
+
+  - type: quad # Right Wall (Green)
+    points: [[0, 0, 559.2], [0, 0, 0], [0, 548.8, 0], [0, 548.8, 559.2]]
+    material: 
+      type: phong
+      color: [0.12, 0.45, 0.15]
+
+  - type: quad # Left Wall (Red)
+    points: [[552.8, 0, 0], [549.6, 0, 559.2], [556, 548.8, 559.2], [556, 548.8, 0]]
+    material: 
+      type: phong
+      color: [0.65, 0.05, 0.05]
+
+  # --- LIGHT ---
+  - type: quad
+    points: [[343, 548.7, 227], [343, 548.7, 332], [213, 548.7, 332], [213, 548.7, 227]]
+    material:
+      type: phong
+      color: [15, 15, 15] 
+      is_light: true
+
+  # --- SPHERES ---
+  
+  # 1. Left Sphere (Phong - Matte Blue)
+  - type: sphere
+    center: [130, 70, 250]
+    radius: 70
+    material:
+      type: phong
+      color: [0.2, 0.2, 0.8]
+
+  # 2. Middle Sphere (Dielectric - Glass/Crystal)
+  # Uses the color logic from your example: Color(0.65, 0.05, 0.05)
+  - type: sphere
+    center: [278, 70, 250]
+    radius: 70
+    material:
+      type: dielectric
+      color: [0.95, 0.95, 0.95] # Clear glass (set to [0.65, 0.05, 0.05] for red tinted glass)
+      ior: 1.5
+
+  # 3. Right Sphere (Anisotropic - Brushed Metal)
+  - type: sphere
+    center: [426, 70, 250]
+    radius: 70
+    material:
+      type: anisotropic
+      color: [0.8, 0.6, 0.2] # Gold-ish
+      roughness_u: 0.2
+      roughness_v: 0.8
