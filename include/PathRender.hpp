@@ -10,6 +10,7 @@
 #include "PathRender/core/ScatterRecord.hpp"
 #include "PathRender/core/BRDF.hpp"
 #include "PathRender/core/PhongBRDF.hpp"
+#include "PathRender/core/DieletricBRDF.hpp"
 #endif // PRISM_CORE
 
 #ifdef PATHRENDER_BUILD_OBJECTS

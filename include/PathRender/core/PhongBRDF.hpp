@@ -7,7 +7,7 @@ namespace PathRender {
 
 class PhongBRDF : public BRDF {    
 public:
-    PhongBRDF(const Color& col) : BRDF(col, 0.3f, 0.7f, 0.0f, 0.0f, 5.0f) {}
+    PhongBRDF(const Color& col) : BRDF(col, 0.7f, 0.0f, 0.0f, 5.0f) {}
 
     bool scatter(const Ray& r_in, const HitRecord& hit, ScatterRecord& srec, std::mt19937& rng) const override;
     Vector3 reflect(const Vector3& v, const Vector3& n) const;

@@ -11,12 +11,12 @@ namespace PathRender {
 
 class BRDF {    
 public:
-    BRDF(const Color& col, float ambient, float diffuse, float specular, float transmissive, float shininess)
-        : color(col), ka(ambient), kd(diffuse), ks(specular), kt(transmissive), n(shininess) {}
+    BRDF(const Color& col, float diffuse, float specular, float transmissive, float shininess)
+        : color(col), kd(diffuse), ks(specular), kt(transmissive), n(shininess) {}
     virtual ~BRDF() = default;
 
     Color color;
-    float ka, kd, ks, kt, n;
+    float kd, ks, kt, n;
 
     virtual bool scatter(const Ray& r_in, const HitRecord& rec, ScatterRecord& srec, std::mt19937& rng) const = 0;
 };

@@ -142,7 +142,4 @@ Color PathTracer::trace_path(const Ray& ray, int depth, const Scene& scene) {
     }
 }
 
-
-
-
 } // namespace PathRender

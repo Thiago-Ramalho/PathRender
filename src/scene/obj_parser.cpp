@@ -1,4 +1,5 @@
 #include "PathRender/scene/obj_parser.hpp"
+#include "PathRender/core/DieletricBRDF.hpp"
 #include "PathRender/core/PhongBRDF.hpp"
 #include "PathRender/core/light.hpp"
 #include <fstream>
@@ -34,8 +35,8 @@ SceneConfig OBJParser::parse_scene(const std::string& filename) {
 
     Scene scene;
     OutputParameters out_params;
-    out_params.width = 400;
-    out_params.height = 400;
+    out_params.width = 300;
+    out_params.height = 300;
     out_params.output_filename = "output.ppm";
     Color bg_color(0, 0, 0);
 
@@ -159,7 +160,7 @@ Material OBJParser::get_material_properties(const std::string& mtl_name) {
         return Material(false, std::make_shared<PhongBRDF>(Color(0.65f, 0.05f, 0.05f)));
     }
     if (mtl_name == "short_box") {
-        return Material(false, std::make_shared<PhongBRDF>(Color(0.0f, 0.0f, 1.0f)));
+        return Material(false, std::make_shared<DielectricBRDF>(Color(0.0f, 0.0f, 1.0f), 1.5));
     }
     if (mtl_name == "tall_box") {
         return Material(false, std::make_shared<PhongBRDF>(Color(0.5f, 0.25f, 0.0f)));
