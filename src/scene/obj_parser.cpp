@@ -149,7 +149,7 @@ Material OBJParser::get_material_properties(const std::string& mtl_name) {
         return Material(false, std::make_shared<PhongBRDF>(Color(0.7f, 0.7f, 0.7f)));
     } 
     if (mtl_name == "ceiling") {
-        return Material(true, std::make_shared<PhongBRDF>(Color(0.7f, 0.7f, 0.7f)));
+        return Material(true, std::make_shared<PhongBRDF>(Color(1.0f, 1.0f, 1.0f)));
     }
     if (mtl_name == "back") {
         return Material(false, std::make_shared<PhongBRDF>(Color(0.7f, 0.7f, 0.7f)));

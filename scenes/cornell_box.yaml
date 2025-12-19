@@ -1,0 +1,103 @@
+camera:
+  position: [278, 273, -800] # Adjusted to standard Cornell view (OBJ was -300, usually too close)
+  look_at: [278, 273, 0]
+  up: [0, 1, 0]
+  fov: 40 # Adjusted for the further camera distance
+  
+output:
+  width: 400
+  height: 400
+  filename: "cornell_box.ppm"
+
+background:
+  color: [0, 0, 0]
+
+objects:
+  # --- WALLS ---
+  - type: quad # Floor
+    points: [[552.8, 0, 0], [0, 0, 0], [0, 0, 559.2], [549.6, 0, 559.2]]
+    material: 
+      type: phong
+      color: [0.7, 0.7, 0.7]
+
+  - type: quad # Ceiling
+    points: [[556, 548.8, 0], [556, 548.8, 559.2], [0, 548.8, 559.2], [0, 548.8, 0]]
+    material: 
+      type: phong
+      color: [0.7, 0.7, 0.7] # Note: Usually ceiling is not emissive, the light is separate
+
+  - type: quad # Back Wall
+    points: [[549.6, 0, 559.2], [0, 0, 559.2], [0, 548.8, 559.2], [556, 548.8, 559.2]]
+    material: 
+      type: phong
+      color: [0.7, 0.7, 0.7]
+
+  - type: quad # Right Wall (Green)
+    points: [[0, 0, 559.2], [0, 0, 0], [0, 548.8, 0], [0, 548.8, 559.2]]
+    material: 
+      type: phong
+      color: [0.12, 0.45, 0.15]
+
+  - type: quad # Left Wall (Red)
+    points: [[552.8, 0, 0], [549.6, 0, 559.2], [556, 548.8, 559.2], [556, 548.8, 0]]
+    material: 
+      type: phong
+      color: [0.65, 0.05, 0.05]
+
+  # --- LIGHT ---
+  - type: quad
+    points: [[343, 548.7, 227], [343, 548.7, 332], [213, 548.7, 332], [213, 548.7, 227]]
+    material:
+      type: phong
+      color: [15, 15, 15] # High value for emission
+      is_light: true
+
+  # --- SHORT BLOCK (Anisotropic) ---
+  # Top
+  - type: quad
+    points: [[130, 165, 65], [82, 165, 225], [240, 165, 272], [290, 165, 114]]
+    material: &short_box_mat
+      type: anisotropic
+      color: [0.8, 0.8, 0.9]
+      roughness_u: 0.8
+      roughness_v: 0.1
+  # Side 1
+  - type: quad
+    points: [[290, 0, 114], [290, 165, 114], [240, 165, 272], [240, 0, 272]]
+    material: *short_box_mat
+  # Side 2
+  - type: quad
+    points: [[130, 0, 65], [130, 165, 65], [290, 165, 114], [290, 0, 114]]
+    material: *short_box_mat
+  # Side 3
+  - type: quad
+    points: [[82, 0, 225], [82, 165, 225], [130, 165, 65], [130, 0, 65]]
+    material: *short_box_mat
+  # Side 4
+  - type: quad
+    points: [[240, 0, 272], [240, 165, 272], [82, 165, 225], [82, 0, 225]]
+    material: *short_box_mat
+
+  # --- TALL BLOCK (Phong) ---
+  # Top
+  - type: quad
+    points: [[423, 330, 247], [265, 330, 296], [314, 330, 456], [472, 330, 406]]
+    material: &tall_box_mat
+      type: phong
+      color: [0.5, 0.25, 0.0]
+  # Side 1
+  - type: quad
+    points: [[423, 0, 247], [423, 330, 247], [472, 330, 406], [472, 0, 406]]
+    material: *tall_box_mat
+  # Side 2
+  - type: quad
+    points: [[472, 0, 406], [472, 330, 406], [314, 330, 456], [314, 0, 456]]
+    material: *tall_box_mat
+  # Side 3
+  - type: quad
+    points: [[314, 0, 456], [314, 330, 456], [265, 330, 296], [265, 0, 296]]
+    material: *tall_box_mat
+  # Side 4
+  - type: quad
+    points: [[265, 0, 296], [265, 330, 296], [423, 330, 247], [423, 0, 247]]
+    material: *tall_box_mat

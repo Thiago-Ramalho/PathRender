@@ -5,7 +5,9 @@
 namespace PathRender {
 
 void PathTracer::render(std::vector<Color>& buffer, const SceneConfig& config) {
-    std::cout << "MULTI-THREADED PATH TRACER RENDER (4 Threads)" << std::endl;
+    std::cout << "MULTI-THREADED PATH TRACER RENDER" << std::endl;
+    // std::cout << "SCENE CONFIG" << std::endl;
+    // std::cout << config.to_string() << std::endl;
     
     const Scene& scene = config.scene;
     const Camera& camera = config.camera;
@@ -14,7 +16,7 @@ void PathTracer::render(std::vector<Color>& buffer, const SceneConfig& config) {
     const int number_of_rays = 100;
     
     // Thread management variables
-    const int num_threads = 4;
+    const int num_threads = 8;
     std::vector<std::thread> threads;
     int rows_per_thread = height / num_threads;
     
@@ -150,15 +152,17 @@ Color PathTracer::trace_path(const Ray& ray, int depth, const Scene& scene, std:
     if (material.is_light) {
         // Optimization: If you hit a light, you generally stop tracing or return immediately 
         // if it's a pure light source with no reflection.
-        return material.brdf->color;
+        return material.brdf->color; // [CAUSING SEGMENTATION FAULT]
     }
+    // return Color{};  // Bounced enough times.
 
     ScatterRecord srec;
-    if (material.brdf->scatter(ray, hit, srec, thread_rng)) {
+    if (material.brdf->scatter(ray, hit, srec, thread_rng)) { //[CAUSING SEGMENTATION FAULT]
         return srec.attenuation * trace_path(srec.out_ray, depth + 1, scene, thread_rng);
     } else {
         return Color{}; // Absorbed
     }
+    // return Color{}; // Absorbed
 }
 
 } // namespace PathRender
