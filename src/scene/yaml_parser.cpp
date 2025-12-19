@@ -1,4 +1,5 @@
 #include "PathRender/scene/yaml_parser.hpp"
+#include "PathRender/core/PhongBRDF.hpp"
 
 namespace PathRender {
 
@@ -88,7 +89,7 @@ std::shared_ptr<Sphere> YAMLParser::parse_sphere(const YAML::Node& node) {
     double radius = node["radius"].as<double>();
     Point3 color_point = parse_point3(node["color"]);
     Color color(color_point.x, color_point.y, color_point.z);
-    Material material = {false, color, 0.3f, 0.7f, 0.0f, 0.0f, 5.0f};
+    Material material = {false, std::make_shared<PhongBRDF>(color)};
 
     return std::make_shared<Sphere>(center, radius, material);
 }
@@ -98,7 +99,7 @@ std::shared_ptr<Plane> YAMLParser::parse_plane(const YAML::Node& node) {
     Vector3 normal = parse_vector3(node["normal"]);
     Point3 color_point = parse_point3(node["color"]);
     Color color(color_point.x, color_point.y, color_point.z);
-    Material material = {false, color, 0.3f, 0.7f, 0.0f, 0.0f, 5.0f};
+    Material material = {false, std::make_shared<PhongBRDF>(color)};
 
     return std::make_shared<Plane>(point, normal, material);
 }

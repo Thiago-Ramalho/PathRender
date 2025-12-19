@@ -38,7 +38,7 @@ bool Sphere::intersect(const Ray& ray, float t_min, float t_max, HitRecord& hit)
 }
 
 const Color& Sphere::get_color() const { 
-    return m_material.color; 
+    return m_material.brdf->color; 
 }
     
 const Point3& Sphere::get_center() const { 

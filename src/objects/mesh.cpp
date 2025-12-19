@@ -35,11 +35,11 @@ const std::vector<Point3>& Mesh::get_vertices() const {
 }
 
 void Mesh::set_color(const Color& color) { 
-    m_material.color = color; 
+    m_material.brdf->color = color; 
 }
 
 const Color& Mesh::get_color() const { 
-    return m_material.color; 
+    return m_material.brdf->color; 
 }
 
 void Mesh::set_name(std::string name) { 
@@ -67,7 +67,7 @@ std::string Mesh::print_vertices() const {
 }
 
 std::string Mesh::to_string() const {
-    return "Mesh(name=" + m_name + ", color=" + m_material.color.to_string() + "\n" + print_vertices() + "\n" + print_triangles() + ")";
+    return "Mesh(name=" + m_name + ", color=" + m_material.brdf->color.to_string() + "\n" + print_vertices() + "\n" + print_triangles() + ")";
 }
 
 Point3 Mesh::get_position() const {

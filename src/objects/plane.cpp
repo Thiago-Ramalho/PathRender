@@ -26,7 +26,7 @@ bool Plane::intersect(const Ray& ray, float t_min, float t_max, HitRecord& hit) 
 }
 
 const Color& Plane::get_color() const { 
-    return m_material.color; 
+    return m_material.brdf->color; 
 }
     
 const Point3& Plane::get_point() const { 

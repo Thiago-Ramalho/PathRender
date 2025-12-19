@@ -31,7 +31,7 @@ void RayCast::render(std::vector<Color>& buffer, const SceneConfig& config) {
             
             if (scene.intersect(ray, 0.001f, 10000000000.0f, hit)) {
                 // Se houver interseção, usar a cor do objeto (sem iluminação)
-                pixel_color = hit.object->get_material().color;
+                pixel_color = hit.object->get_material().brdf->color;
             }
             
             // Armazenar pixel (invertendo y para PPM)

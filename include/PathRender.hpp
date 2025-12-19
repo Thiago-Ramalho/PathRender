@@ -6,6 +6,10 @@
 #include "PathRender/core/ray.hpp"
 #include "PathRender/core/vector.hpp"
 #include "PathRender/core/light.hpp"
+#include "PathRender/core/HitRecord.hpp"
+#include "PathRender/core/ScatterRecord.hpp"
+#include "PathRender/core/BRDF.hpp"
+#include "PathRender/core/PhongBRDF.hpp"
 #endif // PRISM_CORE
 
 #ifdef PATHRENDER_BUILD_OBJECTS

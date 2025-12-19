@@ -1,7 +1,9 @@
 #include "PathRender/scene/obj_parser.hpp"
+#include "PathRender/core/PhongBRDF.hpp"
 #include "PathRender/core/light.hpp"
 #include <fstream>
 #include <iostream>
+#include <memory>
 
 namespace PathRender {
 
@@ -142,30 +144,30 @@ Color OBJParser::get_color_for_material(const std::string& mtl_name) {
 
 Material OBJParser::get_material_properties(const std::string& mtl_name) {
     if (mtl_name == "floor"){
-        return Material(false, Color(0.7f, 0.7f, 0.7f), 0.3f, 0.7f, 0.0f, 0.0f, 5.0f);
+        return Material(false, std::make_shared<PhongBRDF>(Color(0.7f, 0.7f, 0.7f)));
     } 
     if (mtl_name == "ceiling") {
-        return Material(true, Color(0.7f, 0.7f, 0.7f), 0.3f, 0.7f, 0.0f, 0.0f, 5.0f);
+        return Material(true, std::make_shared<PhongBRDF>(Color(0.7f, 0.7f, 0.7f)));
     }
     if (mtl_name == "back") {
-        return Material(false, Color(0.7f, 0.7f, 0.7f), 0.3f, 0.7f, 0.0f, 0.0f, 5.0f);
+        return Material(false, std::make_shared<PhongBRDF>(Color(0.7f, 0.7f, 0.7f)));
     }
     if (mtl_name == "green") {
-        return Material(false, Color(0.12f, 0.45f, 0.15f), 0.3f, 0.7f, 0.0f, 0.0f, 5.0f);
+        return Material(false, std::make_shared<PhongBRDF>(Color(0.12f, 0.45f, 0.15f)));
     }
     if (mtl_name == "red") {
-        return Material(false, Color(0.65f, 0.05f, 0.05f), 0.3f, 0.7f, 0.0f, 0.0f, 5.0f);
+        return Material(false, std::make_shared<PhongBRDF>(Color(0.65f, 0.05f, 0.05f)));
     }
     if (mtl_name == "short_box") {
-        return Material(false, Color(0.0f, 0.0f, 1.0f), 0.3f, 0.7f, 0.7f, 0.0f, 5.0f);
+        return Material(false, std::make_shared<PhongBRDF>(Color(0.0f, 0.0f, 1.0f)));
     }
     if (mtl_name == "tall_box") {
-        return Material(false, Color(0.5f, 0.25f, 0.0f), 0.3f, 0.7f, 0.0f, 0.0f, 5.0f);
+        return Material(false, std::make_shared<PhongBRDF>(Color(0.5f, 0.25f, 0.0f)));
     }
     if (mtl_name == "light") {
-        return Material(true, Color(10.0f, 10.0f, 10.0f), 0.0f, 0.0f, 0.0f, 0.0f, 5.0f);
+        return Material(true, std::make_shared<PhongBRDF>(Color(10.0f, 10.0f, 10.0f)));
     }
-    return Material(false, Color(0.7f, 0.7f, 0.7f), 0.3f, 0.7f, 0.0f, 0.0f, 5.0f); Color(0.5f, 0.5f, 0.5f); // Default
+    return Material(false, std::make_shared<PhongBRDF>(Color(0.7f, 0.7f, 0.7f)));
 }
 
 } // namespace PathRender

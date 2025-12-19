@@ -143,12 +143,12 @@ Color PathTracer::trace_path(const Ray& ray, int depth, const Scene& scene) {
     if (material.is_light) {
         // Optimization: If you hit a light, you generally stop tracing or return immediately 
         // if it's a pure light source with no reflection.
-        return material.color;
+        return material.brdf->color;
     }
 
-    double diffuseProbability = material.kd;
-    double specularProbability = material.ks;
-    // double transmitProbability = material.kt;
+    double diffuseProbability = material.brdf->kd;
+    double specularProbability = material.brdf->ks;
+    // double transmitProbability = material.brdf->kt;
 
     Ray scattered_ray;
     Point3 hit_point = ray.origin + ray.direction * hit.t;
@@ -170,7 +170,7 @@ Color PathTracer::trace_path(const Ray& ray, int depth, const Scene& scene) {
         
         // Convert 'Shininess' (n) to 'Roughness' (fuzz)
         // Heuristic: n=5 -> fuzz=0.4 (Blurry), n=100 -> fuzz=0.02 (Sharp)
-        float fuzz = 2.0f / (material.n); 
+        float fuzz = 2.0f / (material.brdf->n); 
 
         // Clamp fuzz to reasonable limits
         if (fuzz > 1.0f) {
@@ -188,7 +188,7 @@ Color PathTracer::trace_path(const Ray& ray, int depth, const Scene& scene) {
         scattered_ray = Ray(hit_point + normal * 0.01, direction);
     }
 
-    return material.color * trace_path(scattered_ray, depth + 1, scene);
+    return material.brdf->color * trace_path(scattered_ray, depth + 1, scene);
 }
 
 
