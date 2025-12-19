@@ -4,75 +4,96 @@
 
 namespace PathRender {
 
-PathTracer::PathTracer() : rng(std::random_device{}()) {}
-
 void PathTracer::render(std::vector<Color>& buffer, const SceneConfig& config) {
-    std::cout << "PATH TRACER RENDER" << std::endl;
+    std::cout << "MULTI-THREADED PATH TRACER RENDER (4 Threads)" << std::endl;
+    
     const Scene& scene = config.scene;
     const Camera& camera = config.camera;
     const int width = config.output_params.width;
     const int height = config.output_params.height;
-    const int number_of_rays = 50;
-    const int total_pixels = width * height;
-    int pixels_rendered = 0;
+    const int number_of_rays = 100;
+    
+    // Thread management variables
+    const int num_threads = 4;
+    std::vector<std::thread> threads;
+    int rows_per_thread = height / num_threads;
+    
+    // Atomic counter for progress bar (safe to increment from multiple threads)
+    std::atomic<int> pixels_rendered{0};
+    int total_pixels = width * height;
+    std::mutex print_mutex; // To prevent garbled console output
 
-    for (int j = 0; j < height; ++j) {
-        for (int i = 0; i < width; ++i) {
-            Color pixel_color(0, 0, 0);
+    // The function that each thread will run
+    auto render_chunk = [&](int start_row, int end_row, int thread_id) {
+        // 1. Create a LOCAL Random Number Generator for this thread
+        // We seed it with random_device + thread_id to ensure unique sequences
+        std::mt19937 thread_rng(std::random_device{}() + thread_id);
+        std::uniform_real_distribution<float> dist(0.0f, 1.0f);
 
-            // 1. Anti-Aliasing Loop
-            for(int k = 0; k < number_of_rays; k++){    
-                // Add random offset for AA
-                float u = (float(i) + random()) / (width - 1);
-                float v = (float(j) + random()) / (height - 1);
+        for (int j = start_row; j < end_row; ++j) {
+            for (int i = 0; i < width; ++i) {
+                Color pixel_color(0, 0, 0);
+
+                // Anti-Aliasing Loop
+                for(int k = 0; k < number_of_rays; k++){    
+                    // Use local thread_rng
+                    float u = (float(i) + dist(thread_rng)) / (width - 1);
+                    float v = (float(j) + dist(thread_rng)) / (height - 1);
+                    
+                    Ray ray = camera.get_ray(u, v);
+                    // Pass the local RNG down the chain
+                    pixel_color += trace_path(ray, 0, scene, thread_rng);                
+                }
+
+                pixel_color /= (double)number_of_rays;
+                pixel_color = Color(sqrt(pixel_color.r), sqrt(pixel_color.g), sqrt(pixel_color.b));
                 
-                Ray ray = camera.get_ray(u, v);
-                pixel_color += trace_path(ray, 0, scene);                
-            }
+                // Write to buffer (Thread safe because each thread writes to unique indices)
+                buffer[(height - 1 - j) * width + i] = pixel_color;
 
-            // Average samples
-            pixel_color /= (double)number_of_rays;
-            
-            // 2. Gamma Correction (Approximate for display)
-            // Monitors expect gamma corrected values (power of 1/2.2, or sqrt for approx)
-            pixel_color = Color(sqrt(pixel_color.r), sqrt(pixel_color.g), sqrt(pixel_color.b));
-
-            buffer[(height - 1 - j) * width + i] = pixel_color;
-
-            // Atualizar barra de progresso
-            ++pixels_rendered;
-            if (pixels_rendered % 100 == 0 || pixels_rendered == total_pixels) {
-                float progress = (float)pixels_rendered / total_pixels * 100.0f;
-                int bar_width = 50;
-                int filled = (int)(progress / 100.0f * bar_width);
+                // Progress Bar Logic
+                int completed = ++pixels_rendered; // Atomic increment
                 
-                std::cout << "\rProgresso: [";
-                for (int k = 0; k < bar_width; ++k) {
-                    if (k < filled) {
-                        std::cout << "█";
-                    } else {
-                        std::cout << "░";
+                // Only print every 100 pixels to save console IO time
+                if (completed % 100 == 0 || completed == total_pixels) {
+                    // Try to lock. If busy, just skip printing this frame (optimization)
+                    if (print_mutex.try_lock()) {
+                        float progress = (float)completed / total_pixels * 100.0f;
+                        std::cout << "\rProgress: " << std::fixed << std::setprecision(1) << progress << "%   ";
+                        std::cout.flush();
+                        print_mutex.unlock();
                     }
                 }
-                std::cout << "] " << std::fixed << std::setprecision(1) << progress << "% (" 
-                         << pixels_rendered << "/" << total_pixels << ")";
-                std::cout.flush();
             }
         }
+    };
+
+    // 2. Launch Threads
+    for (int t = 0; t < num_threads; ++t) {
+        int start_row = t * rows_per_thread;
+        int end_row = (t == num_threads - 1) ? height : (t + 1) * rows_per_thread;
+        
+        // Emplace_back creates and starts the thread
+        threads.emplace_back(render_chunk, start_row, end_row, t);
+    }
+
+    // 3. Wait for all threads to finish
+    for (auto& t : threads) {
+        t.join();
     }
     
-    // Nova linha após completar o progresso
-    std::cout << std::endl;
+    std::cout << "\nRender Complete!" << std::endl;
 }
 
-Vector3 PathTracer::random_unit_vector_in_hemisphere_of(const Vector3& normal) {
+Vector3 PathTracer::random_unit_vector_in_hemisphere_of(const Vector3& normal, std::mt19937& thread_rng) {
+    std::uniform_real_distribution<float> dist(0.0f, 1.0f);
     Vector3 v;
     while (true) {
         // 1. Gera um vetor aleatório dentro do cubo [-1, 1]
         // random() * 2.0 - 1.0 converte o range [0, 1] para [-1, 1]
-        float x = random() * 2.0f - 1.0f;
-        float y = random() * 2.0f - 1.0f;
-        float z = random() * 2.0f - 1.0f;
+        float x = dist(thread_rng) * 2.0f - 1.0f;
+        float y = dist(thread_rng) * 2.0f - 1.0f;
+        float z = dist(thread_rng) * 2.0f - 1.0f;
 
         // 2. Calcula o comprimento ao quadrado
         float lenSq = x*x + y*y + z*z;
@@ -86,11 +107,9 @@ Vector3 PathTracer::random_unit_vector_in_hemisphere_of(const Vector3& normal) {
         }
     }
 
-    // 4. Garante que está no mesmo hemisfério da normal (Dot Product)
-    float dot = v.x * normal.x + v.y * normal.y + v.z * normal.z;
-    
+    // 4. Garante que está no mesmo hemisfério da normal (Dot Product)    
     // Se o produto escalar for negativo, aponta para o lado oposto, então invertemos
-    if (dot < 0.0f) {
+    if (v.dot(normal) < 0.0f) {
         return Vector3(-v.x, -v.y, -v.z);
     }
 
@@ -115,7 +134,7 @@ float PathTracer::reflectance(float cosine, float ref_idx) {
     return r0 + (1 - r0) * pow((1 - cosine), 5);
 }
 
-Color PathTracer::trace_path(const Ray& ray, int depth, const Scene& scene) {
+Color PathTracer::trace_path(const Ray& ray, int depth, const Scene& scene, std::mt19937& thread_rng) {
     if (depth >= max_depth) {
         return Color{};  // Bounced enough times.
     }
@@ -135,8 +154,8 @@ Color PathTracer::trace_path(const Ray& ray, int depth, const Scene& scene) {
     }
 
     ScatterRecord srec;
-    if (material.brdf->scatter(ray, hit, srec, rng)) {
-        return srec.attenuation * trace_path(srec.out_ray, depth + 1, scene);
+    if (material.brdf->scatter(ray, hit, srec, thread_rng)) {
+        return srec.attenuation * trace_path(srec.out_ray, depth + 1, scene, thread_rng);
     } else {
         return Color{}; // Absorbed
     }
