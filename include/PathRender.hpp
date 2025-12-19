@@ -11,6 +11,7 @@
 #include "PathRender/core/BRDF.hpp"
 #include "PathRender/core/PhongBRDF.hpp"
 #include "PathRender/core/DieletricBRDF.hpp"
+#include "PathRender/core/AnisotropicMatteBRDF.hpp"
 #endif // PRISM_CORE
 
 #ifdef PATHRENDER_BUILD_OBJECTS
@@ -29,4 +30,5 @@
 
 #ifdef PATHRENDER_BUILD_UTILS
 #include "PathRender/utils/filesystem_utils.hpp"
+#include "PathRender/utils/math_utils.hpp"
 #endif // PATHRENDER_BUILD_UTILS

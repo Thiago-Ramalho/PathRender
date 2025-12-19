@@ -1,4 +1,5 @@
 #include "PathRender/scene/obj_parser.hpp"
+#include "PathRender/core/AnisotropicMatteBRDF.hpp"
 #include "PathRender/core/DieletricBRDF.hpp"
 #include "PathRender/core/PhongBRDF.hpp"
 #include "PathRender/core/light.hpp"
@@ -160,7 +161,7 @@ Material OBJParser::get_material_properties(const std::string& mtl_name) {
         return Material(false, std::make_shared<PhongBRDF>(Color(0.65f, 0.05f, 0.05f)));
     }
     if (mtl_name == "short_box") {
-        return Material(false, std::make_shared<DielectricBRDF>(Color(0.0f, 0.0f, 1.0f), 1.5));
+        return Material(false, std::make_shared<AnisotropicMatteBRDF>(Color(0.8, 0.8, 0.9), 0.8f, 0.1f));
     }
     if (mtl_name == "tall_box") {
         return Material(false, std::make_shared<PhongBRDF>(Color(0.5f, 0.25f, 0.0f)));
