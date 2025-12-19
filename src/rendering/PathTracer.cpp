@@ -97,20 +97,8 @@ Vector3 PathTracer::random_unit_vector_in_hemisphere_of(const Vector3& normal) {
     return v;
 }
 
-Vector3 PathTracer::RandomUnitVector() {
-    float z = random() * 2.0f - 1.0f;
-    float a = random() * M_PI * 2.0f;
-    float r = sqrt(1.0f - z * z);
-    float x = r * cos(a);
-    float y = r * sin(a);
-    return Vector3(x, y, z);
-}
 Vector3 PathTracer::mix(const Vector3& x, const Vector3& y, double a){
     return x * (1.0f - a) + y * a;
-}
-
-Vector3 PathTracer::reflect(const Vector3& v, const Vector3& n) {
-    return v - n * 2.0f * v.dot(n);
 }
 
 Vector3 PathTracer::refract(const Vector3& v, const Vector3& n, float eta) {
@@ -146,49 +134,12 @@ Color PathTracer::trace_path(const Ray& ray, int depth, const Scene& scene) {
         return material.brdf->color;
     }
 
-    double diffuseProbability = material.brdf->kd;
-    double specularProbability = material.brdf->ks;
-    // double transmitProbability = material.brdf->kt;
-
-    Ray scattered_ray;
-    Point3 hit_point = ray.origin + ray.direction * hit.t;
-    Vector3 normal = hit.normal;
-
-    double total = diffuseProbability + specularProbability;// + transmitProbability;
-    double rayProbability = random() * total; 
-    if (rayProbability < diffuseProbability) {
-        Vector3 direction = (normal + RandomUnitVector()).normalized();
-        
-        // Catch degenerate rays
-        if (direction.length() < 0.001f) {
-            direction = normal;
-        } 
-
-        scattered_ray = Ray(hit_point + normal * 0.01, direction);
+    ScatterRecord srec;
+    if (material.brdf->scatter(ray, hit, srec, rng)) {
+        return srec.attenuation * trace_path(srec.out_ray, depth + 1, scene);
     } else {
-        Vector3 reflected = reflect(ray.direction.normalized(), normal);
-        
-        // Convert 'Shininess' (n) to 'Roughness' (fuzz)
-        // Heuristic: n=5 -> fuzz=0.4 (Blurry), n=100 -> fuzz=0.02 (Sharp)
-        float fuzz = 2.0f / (material.brdf->n); 
-
-        // Clamp fuzz to reasonable limits
-        if (fuzz > 1.0f) {
-            fuzz = 1.0f;
-        }
-
-        // Apply fuzz: Add a random sphere vector to the reflection
-        Vector3 direction = (reflected + RandomUnitVector() * fuzz).normalized();
-        
-        // Catch bad scatters (ray going into the surface)
-        if (direction.dot(normal) <= 0) {
-            direction = reflected;
-        } 
-
-        scattered_ray = Ray(hit_point + normal * 0.01, direction);
+        return Color{}; // Absorbed
     }
-
-    return material.brdf->color * trace_path(scattered_ray, depth + 1, scene);
 }
 
 
