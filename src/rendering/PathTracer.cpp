@@ -10,6 +10,14 @@ void PathTracer::render(std::vector<Color>& buffer, const SceneConfig& config) {
     // std::cout << config.to_string() << std::endl;
     
     const Scene& scene = config.scene;
+    
+    // Extract light points for direct lighting (only if enabled)
+    if (m_direct_lighting_enabled) {
+        extract_light_points(scene);
+        std::cout << "Found " << m_light_points.size() << " light sources for direct lighting" << std::endl;
+    } else {
+        std::cout << "Direct lighting disabled - using pure Monte Carlo" << std::endl;
+    }
     const Camera& camera = config.camera;
     const int width = config.output_params.width;
     const int height = config.output_params.height;
@@ -147,22 +155,98 @@ Color PathTracer::trace_path(const Ray& ray, int depth, const Scene& scene, std:
     }
 
     auto&& material = hit.object->get_material();
+    Point3 hit_point = ray.origin + ray.direction * hit.t;
+    Vector3 normal = hit.normal;
 
-    // 3. Emission
+    // 3. Emission - if we hit a light source
     if (material.is_light) {
-        // Optimization: If you hit a light, you generally stop tracing or return immediately 
-        // if it's a pure light source with no reflection.
-        return material.brdf->color; // [CAUSING SEGMENTATION FAULT]
+        return material.brdf->color;
     }
-    // return Color{};  // Bounced enough times.
 
-    ScatterRecord srec;
-    if (material.brdf->scatter(ray, hit, srec, thread_rng)) { //[CAUSING SEGMENTATION FAULT]
-        return srec.attenuation * trace_path(srec.out_ray, depth + 1, scene, thread_rng);
-    } else {
-        return Color{}; // Absorbed
+    // 4. Calculate direct lighting contribution (if enabled)
+    Color direct_light(0, 0, 0);
+    if (m_direct_lighting_enabled) {
+        direct_light = calculate_direct_lighting(hit_point, normal, material, scene, thread_rng);
     }
-    // return Color{}; // Absorbed
+
+    // 5. Monte Carlo indirect lighting (existing logic)
+    Color indirect_light(0, 0, 0);
+    ScatterRecord srec;
+    if (material.brdf->scatter(ray, hit, srec, thread_rng)) {
+        indirect_light = srec.attenuation * trace_path(srec.out_ray, depth + 1, scene, thread_rng);
+    }
+
+    // 6. Combine direct and indirect lighting
+    return direct_light + indirect_light;
+}
+
+void PathTracer::extract_light_points(const Scene& scene) {
+    m_light_points.clear();
+    
+    const auto& objects = scene.get_objects();
+    for (const auto& obj : objects) {
+        const Material& material = obj->get_material();
+        if (material.is_light) {
+            // For mesh lights, sample multiple points
+            // For now, use object center as single light point
+            Point3 light_pos = obj->get_position();
+            Color light_color = material.brdf->color;
+            float intensity = (light_color.r + light_color.g + light_color.b) / 3.0f;
+            
+            m_light_points.push_back({light_pos, light_color, intensity});
+        }
+    }
+}
+
+Color PathTracer::calculate_direct_lighting(const Point3& hit_point, const Vector3& normal, 
+                                           const Material& material, const Scene& scene, 
+                                           std::mt19937& /*thread_rng*/) {
+    Color total_light(0, 0, 0);
+    
+    // Sample all light sources
+    for (const auto& light : m_light_points) {
+        // Vector from hit point to light
+        Vector3 light_dir = (light.position - hit_point).normalized();
+        float distance = (light.position - hit_point).length();
+        
+        // Check if light is above surface (dot product with normal)
+        float n_dot_l = normal.dot(light_dir);
+        if (n_dot_l <= 0) continue;  // Light behind surface
+        
+        // Shadow test
+        if (is_in_shadow(hit_point, light.position, scene)) {
+            continue;  // In shadow, skip this light
+        }
+        
+        // Calculate light attenuation (inverse square law)
+        float attenuation = 1.0f / (1.0f + 0.001f * distance * distance);
+        
+        // Simple Lambertian diffuse lighting
+        Color diffuse_contribution = material.brdf->color * light.color * n_dot_l * attenuation * light.intensity;
+        
+        total_light += diffuse_contribution;
+    }
+    
+    return total_light * 0.8f;  // Scale by diffuse coefficient (assuming kd=0.8)
+}
+
+bool PathTracer::is_in_shadow(const Point3& point, const Point3& light_pos, const Scene& scene) {
+    Vector3 light_dir = (light_pos - point).normalized();
+    float light_distance = (light_pos - point).length();
+    
+    // Create shadow ray (offset slightly to avoid self-intersection)
+    Ray shadow_ray(point + light_dir * 0.001f, light_dir);
+    
+    HitRecord shadow_hit;
+    if (scene.intersect(shadow_ray, 0.001f, light_distance - 0.001f, shadow_hit)) {
+        // Check if the hit object is the light itself
+        if (shadow_hit.object->get_material().is_light) {
+            return false;  // Hit the light, not in shadow
+        }
+        return true;  // Hit something else, in shadow
+    }
+    
+    return false;  // Nothing between point and light
 }
 
 } // namespace PathRender

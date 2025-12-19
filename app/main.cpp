@@ -20,7 +20,7 @@
 using namespace PathRender;
 using namespace Utils;
 
-std::vector<Color> render_scene(SceneConfig config) {
+std::vector<Color> render_scene(SceneConfig config, bool direct_lighting_enabled = true) {
     const Scene& scene = config.scene;
     const Camera& camera = config.camera;
     const int width = config.output_params.width;
@@ -32,6 +32,7 @@ std::vector<Color> render_scene(SceneConfig config) {
     std::vector<Color> pixels(width * height);
 
     PathTracer renderer;
+    renderer.set_direct_lighting_enabled(direct_lighting_enabled);
     renderer.render(pixels, config); 
     std::cout << "Progresso: 100%" << std::endl;
     return pixels;
@@ -47,7 +48,17 @@ std::string get_scene_filename_from_args(int argc, char** argv) {
         }
     }
 
-    throw std::runtime_error("Usage: ./PathRender --scene nome.yml");
+    throw std::runtime_error("Usage: ./PathRender --scene nome.yml [--no-direct-lighting]");
+}
+
+bool get_direct_lighting_flag_from_args(int argc, char** argv) {
+    for (int i = 1; i < argc; ++i) {
+        std::string arg = argv[i];
+        if (arg == "--no-direct-lighting") {
+            return false;  // Direct lighting disabled
+        }
+    }
+    return true;  // Direct lighting enabled by default
 }
 
 std::filesystem::path extract_scene_path(int argc, char** argv) {
@@ -77,6 +88,9 @@ int main(int argc, char** argv) {
 
     try {
         auto scene_path = extract_scene_path(argc, argv);
+        bool direct_lighting_enabled = get_direct_lighting_flag_from_args(argc, argv);
+        
+        std::cout << "Direct lighting: " << (direct_lighting_enabled ? "ENABLED" : "DISABLED") << std::endl;
         
         // Solução provisória para selecionar parser de acordo com cena ser .yaml ou .obj
         std::string extension = scene_path.extension().string();
@@ -97,8 +111,8 @@ int main(int argc, char** argv) {
             }
         }();
         
-        // Renderizar cena com raycast simples
-        std::vector<Color> pixels = render_scene(config);
+        // Renderizar cena com path tracer (com ou sem direct lighting)
+        std::vector<Color> pixels = render_scene(config, direct_lighting_enabled);
         
         // Garantir que o diretório output existe e gerar nome único
         std::string output_dir = ensure_output_directory();

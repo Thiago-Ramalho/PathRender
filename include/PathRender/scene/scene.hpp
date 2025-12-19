@@ -47,6 +47,11 @@ public:
      */
     size_t object_count() const;
 
+    /**
+     * @brief Retorna referência constante para o vetor de objetos
+     */
+    const std::vector<std::shared_ptr<Object>>& get_objects() const;
+
     std::string to_string() const;
     
 private:

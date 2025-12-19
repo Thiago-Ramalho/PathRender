@@ -61,11 +61,13 @@ void Scene::clear() {
     m_objects.clear();
 }
 
-size_t Scene::object_count() const { 
-    return m_objects.size(); 
+size_t Scene::object_count() const {
+    return m_objects.size();
 }
 
-std::string Scene::to_string() const {
+const std::vector<std::shared_ptr<Object>>& Scene::get_objects() const {
+    return m_objects;
+}std::string Scene::to_string() const {
     std::string result = "Scene with " + std::to_string(m_objects.size()) + " objects:\n";
     for (const auto& obj : m_objects) {
         result += "  - " + obj->to_string() + "\n";

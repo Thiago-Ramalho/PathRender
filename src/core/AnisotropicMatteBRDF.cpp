@@ -19,7 +19,6 @@ bool AnisotropicMatteBRDF::scatter(const Ray& r_in, const HitRecord& hit, Scatte
     Utils::build_orthonormal_basis(hit.normal, tangent, bitangent);
 
     // 3. Generate Random Point in Unit Sphere
-    // We reuse your logic for random unit sphere generation
     auto random_in_unit_sphere = [&]() {
         while(true) {
             float x = dist(rng) * 2.0f - 1.0f;
